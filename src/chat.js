@@ -41,5 +41,5 @@ function userSendPrivateMessage(privateMessage) {
 }
 
 function logout(socket) {
-  console.logout();
+  _stats.logout();
 }
