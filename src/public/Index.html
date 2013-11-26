@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Word Run</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css" />
+    <link type="text/css" rel="stylesheet" href="css/modal.css" />
+    <link type="text/css" rel="stylesheet" href="css/index.css" />
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.9/require.min.js" data-main="js/init"></script>
+</head>
+<body>
+    <div id="chatApp" class="pure-g"></div>
+
+    <script id="chatAppTemplate" type="text/html">
+        <div class="modal-background pure-u" intro="fadeIn" outro="fadeOut">
+            <div class="modal">
+                <form class="pure-form pure-form-aligned">
+                    <fieldset>
+                        <legend>פרטי משתמש</legend>
+                        <div class="pure-control-group">
+                            <label for="nick">כינוי</label>
+                            <input id="nick" type="text" placeholder="הכנס כינוי..." value="{{nick}}" />
+                        </div>
+
+                        <div class="pure-control-group">
+                            <label for="age">גיל</label>
+                            <select id="age" class="form-control" value="{{age}}">
+                                <option>-גיל-</option>
+                                <option>21</option>
+                                <option>22</option>
+                                <option>23</option>
+                                <option>24</option>
+                                <option>25</option>
+                            </select>
+                        </div>
+
+                        <div class="pure-control-group">
+                            <label>מין</label>
+                            <label for="genderMale" class="pure-radio">
+                                <input id="genderMale" type="radio" name="{{gender}}" value="male" />
+                                זכר
+                            </label>
+
+                            <label for="genderFemale" class="pure-radio">
+                                <input id="genderFemale" type="radio" name="{{gender}}" value="female" />
+                                נקבה
+                            </label>
+                        </div>
+
+                        <div class="pure-controls">
+                            <label for="cb" class="pure-checkbox">
+                                <input id="cb" type="checkbox" checked="{{saveUserInfo}}" />שמור את פרטי המשתמש</label>
+
+                            <button id="submitLoginInfo" class="pure-button pure-button-primary" on-tap="tryLogin">היכנס לצ'אט</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+        <div id="users" class="pure-u-1-6 side-list">
+            <h4>משתמשים</h4>
+            <ul>
+                {{#users}}
+                <li on-tap="showUserPrivateMessage">{{name}}</li>
+                {{/users}}
+            </ul>
+        </div>
+        <div class="pure-u-2-3">
+            <div id="chatMessages">
+                {{#messages}}
+                <div class="message"><span class="msg-time">{{time}}</span><a class="msg-user-name" href="#">{{userName}}:</a><span class="msg-text">{{text}}</span></div>
+                {{/messages}}
+            </div>
+            <form id="chatControls" class="pure-form">
+                <input class="pure-input-1-2" id="textToSend" type="text" on-enter="sendMessage" />
+                <button class="pure-button pure-button-primary" on-tap="sendMessage">שלח</button>
+            </form>
+        </div>
+        <div id="rooms" class="pure-u-1-6 side-list">
+            <h4>חדרים</h4>
+            <ul>
+                {{#rooms}}
+                <li on-tap="showRoom">{{name}}</li>
+                {{/rooms}}
+            </ul>
+        </div>
+    </script>
+</body>
+</html>

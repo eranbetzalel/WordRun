@@ -1,0 +1,32 @@
+.side-list {
+}
+
+    .side-list h4 {
+        text-align: center;
+    }
+
+    .side-list ul {
+        list-style: none;
+        cursor: pointer;
+    }
+
+    .side-list li {
+        background-color: aqua;
+        margin: 3px 0;
+    }
+
+        .side-list li:hover {
+            background-color: blue;
+        }
+
+#chatControls {
+    margin-top: 10px;
+}
+
+#chatMessages {
+    border: 1px solid black;
+    height: 25em;
+    background-color: #f9f9f9;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
