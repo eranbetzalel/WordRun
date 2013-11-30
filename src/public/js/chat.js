@@ -1,11 +1,9 @@
 ﻿define(
-  ['config', 'jquery', 'html5shiv', 'ractive', 'moment', 'socket.io'],
-  function (config, $, html5Shiv, ractive, moment, io) {
+  ['config', 'jquery', 'html5shiv', 'ractive', 'moment', 'socket.io', 'underscore'],
+  function (config, $, html5Shiv, ractive, moment, io, _) {
     'use strict';
 
     var chatApp = function () {
-      var _modal;
-
       return {
         init: function () {
           //  Initialize RActive
@@ -32,14 +30,35 @@
                 { name: 'חדר 2' },
                 { name: 'חדר 3' }
               ],
-              messages: [
-                { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
-                { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
-                { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
-                { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
-                { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' }
-              ]
-            }
+              messageContainers: [
+                {
+                  name: 'לובי',
+                  active: true,
+                  pinned: true,
+                  messages: [
+                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' }
+                  ]
+                },
+                {
+                  name: 'משתמש 1',
+                  messages: [
+                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' }
+                  ],
+                },
+                {
+                  name: 'משתמש 2',
+                  messages: [
+                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' }
+                  ],
+                }
+              ],
+            },
           });
 
           this.mainView.on('tryLogin', function (event) {
@@ -54,11 +73,30 @@
             });
           });
 
-          this.mainView.on('showRoom', function (event) {
-            event.original.preventDefault();
+          this.mainView.on('showMessageContainer', function (event) {
+            var messageContainers = this.get('messageContainers');
+
+            var activeMessageContainer = _.findWhere(messageContainers, { active: true});
+            var activeMessageContainerIndex = _.indexOf(messageContainers, activeMessageContainer);
+
+            this.set('messageContainers.' + activeMessageContainerIndex + '.active', false);
+            this.set(event.keypath + '.active', true);
           });
 
-          this.mainView.on('showUserPrivateMessage', function (event) {
+          this.mainView.on('closeMessageContainer', function (event) {
+            event.original.stopPropagation();
+            
+            var messageContainerIndex = event.keypath.split('.')[1];
+
+            if(event.context.active)
+              this.set('messageContainers.' + (messageContainerIndex - 1) + '.active', true);
+            
+            var messageContainers = this.get('messageContainers');
+
+            messageContainers.splice(messageContainerIndex, 1);
+          });
+
+          this.mainView.on('openPrivateMessage', function (event) {
             event.original.preventDefault();
           });
 

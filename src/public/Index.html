@@ -5,6 +5,7 @@
     <title>Word Run</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css" />
     <link type="text/css" rel="stylesheet" href="css/modal.css" />
+    <link type="text/css" rel="stylesheet" href="css/tabs.css" />
     <link type="text/css" rel="stylesheet" href="css/index.css" />
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.9/require.min.js" data-main="js/init"></script>
 </head>
@@ -62,15 +63,30 @@
             <h4>משתמשים</h4>
             <ul>
                 {{#users}}
-                <li on-tap="showUserPrivateMessage">{{name}}</li>
+                <li on-tap="openPrivateMessage">{{name}}</li>
                 {{/users}}
             </ul>
         </div>
         <div class="pure-u-2-3">
-            <div id="chatMessages">
-                {{#messages}}
-                <div class="message"><span class="msg-time">{{time}}</span><a class="msg-user-name" href="#">{{userName}}:</a><span class="msg-text">{{text}}</span></div>
-                {{/messages}}
+            <div class="tabs">
+                <ul>
+                    {{#messageContainers}}
+                    <li class="tab-title {{#active}}active-tab{{/active}}"
+                        on-tap="showMessageContainer">
+                        {{^pinned}}<span on-tap="closeMessageContainer">X</span>{{/pinned}}
+                        <span class="tab-name">{{name}}</span>
+                    </li>
+                    {{/messageContainers}}
+                </ul>
+                <div class="tab-view">
+                    {{#messageContainers}}
+                    <div class="tab-content {{#active}}active-tab{{/active}}">
+                        {{#messages}}
+                        <div class="message"><span class="msg-time">{{time}}</span><a class="msg-user-name" href="#">{{userName}}:</a><span class="msg-text">{{text}}</span></div>
+                        {{/messages}}
+                    </div>
+                    {{/messageContainers}}
+                </div>
             </div>
             <form id="chatControls" class="pure-form">
                 <input class="pure-input-1-2" id="textToSend" type="text" on-enter="sendMessage" />

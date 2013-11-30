@@ -23,6 +23,7 @@
   <ItemGroup>
     <Content Include="package.json" />
     <Compile Include="app.js" />
+    <Content Include="public\css\tabs.css" />
     <Content Include="public\Index.html" />
     <Content Include="public\favicon.ico" />
     <Content Include="public\css\index.css" />
