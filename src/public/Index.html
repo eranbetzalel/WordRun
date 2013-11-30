@@ -63,7 +63,7 @@
             <h4>משתמשים</h4>
             <ul>
                 {{#users}}
-                <li on-tap="openPrivateMessage">{{name}}</li>
+                <li on-tap="openPrivateMessage:{{id}}">{{name}}</li>
                 {{/users}}
             </ul>
         </div>
@@ -97,7 +97,7 @@
             <h4>חדרים</h4>
             <ul>
                 {{#rooms}}
-                <li on-tap="showRoom">{{name}}</li>
+                <li on-tap="changeRoom">{{name}}</li>
                 {{/rooms}}
             </ul>
         </div>

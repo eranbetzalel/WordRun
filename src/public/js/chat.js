@@ -21,9 +21,9 @@
                 isLoggedIn: false
               },
               users: [
-                { name: 'משתמש 1' },
-                { name: 'משתמש 2' },
-                { name: 'משתמש 3' }
+                { id: 1, name: 'משתמש 1' },
+                { id: 2, name: 'משתמש 2' },
+                { id: 3, name: 'משתמש 3' }
               ],
               rooms: [
                 { name: 'חדר 1' },
@@ -42,6 +42,7 @@
                   ]
                 },
                 {
+                  userId: 1,
                   name: 'משתמש 1',
                   messages: [
                     { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
@@ -50,6 +51,7 @@
                   ],
                 },
                 {
+                  userId: 2,
                   name: 'משתמש 2',
                   messages: [
                     { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
@@ -94,8 +96,46 @@
             messageContainers.splice(index, 1);
           });
 
-          this.mainView.on('openPrivateMessage', function (event) {
-            event.original.preventDefault();
+          this.mainView.on('changeRoom', function (event) {
+          });
+
+          this.mainView.on('openPrivateMessage', function (event, userId) {
+            var messageContainers = this.get('messageContainers');
+
+            var userMessageContainer = _.findWhere(messageContainers, { userId: userId});
+
+            if(userMessageContainer == undefined) {
+              var activeMessageContainer = _.findWhere(messageContainers, { active: true});
+              var activeMessageContainerIndex = _.indexOf(messageContainers, activeMessageContainer);
+              this.set('messageContainers.' + activeMessageContainerIndex + '.active', false);
+
+              messageContainers.push({
+                  userId: userId,
+                  name: '',
+                  active: true,
+                  messages: [
+                    { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' }
+                  ],
+              });
+
+              var userMessageContainerIndex = _.indexOf(messageContainers, userMessageContainer);
+
+              this.set('messageContainers.' + userMessageContainerIndex + '.active', true);
+
+              return;
+            }
+
+            if(!userMessageContainer.active) {
+              var activeMessageContainer = _.findWhere(messageContainers, { active: true});
+              var activeMessageContainerIndex = _.indexOf(messageContainers, activeMessageContainer);
+              this.set('messageContainers.' + activeMessageContainerIndex + '.active', false);
+
+              var userMessageContainerIndex = _.indexOf(messageContainers, userMessageContainer);
+
+              this.set('messageContainers.' + userMessageContainerIndex + '.active', true);
+            }
           });
 
           this.mainView.on('sendMessage', function (event) {
