@@ -37,7 +37,7 @@
                   pinned: true,
                   messages: [
                     { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
-                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
                     { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' }
                   ]
                 },
@@ -52,9 +52,9 @@
                 {
                   name: 'משתמש 2',
                   messages: [
-                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
-                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
-                    { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' }
+                    { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
+                    { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' }
                   ],
                 }
               ],
@@ -83,17 +83,15 @@
             this.set(event.keypath + '.active', true);
           });
 
-          this.mainView.on('closeMessageContainer', function (event) {
+          this.mainView.on('closeMessageContainer', function (event, index) {
             event.original.stopPropagation();
             
-            var messageContainerIndex = event.keypath.split('.')[1];
-
             if(event.context.active)
-              this.set('messageContainers.' + (messageContainerIndex - 1) + '.active', true);
+              this.set('messageContainers.' + (index - 1) + '.active', true);
             
             var messageContainers = this.get('messageContainers');
 
-            messageContainers.splice(messageContainerIndex, 1);
+            messageContainers.splice(index, 1);
           });
 
           this.mainView.on('openPrivateMessage', function (event) {

@@ -70,16 +70,16 @@
         <div class="pure-u-2-3">
             <div class="tabs">
                 <ul>
-                    {{#messageContainers}}
+                    {{#messageContainers:i}}
                     <li class="tab-title {{#active}}active-tab{{/active}}"
                         on-tap="showMessageContainer">
-                        {{^pinned}}<span on-tap="closeMessageContainer">X</span>{{/pinned}}
+                        {{^pinned}}<span on-tap="closeMessageContainer:{{i}}">X</span>{{/pinned}}
                         <span class="tab-name">{{name}}</span>
                     </li>
                     {{/messageContainers}}
                 </ul>
                 <div class="tab-view">
-                    {{#messageContainers}}
+                    {{#messageContainers:i}}
                     <div class="tab-content {{#active}}active-tab{{/active}}">
                         {{#messages}}
                         <div class="message"><span class="msg-time">{{time}}</span><a class="msg-user-name" href="#">{{userName}}:</a><span class="msg-text">{{text}}</span></div>
