@@ -14,8 +14,4 @@
 });
 
 // Load the main app module to start the app
-requirejs(['jquery', 'chat'], function ($, chatApp) {
-  $(function () {
-    chatApp.init();
-  });
-});
+requirejs(['chat']);
