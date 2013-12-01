@@ -62,30 +62,49 @@
         <div id="users" class="pure-u-1-6 side-list">
             <h4>משתמשים</h4>
             <ul>
-                {{#users}}
-                <li on-tap="openPrivateMessage:{{id}}">{{name}}</li>
+                {{#users:name}}
+                <li on-tap="openUserConversation:{{name}}">{{name}}</li>
                 {{/users}}
             </ul>
         </div>
         <div class="pure-u-2-3">
             <div class="tabs">
                 <ul>
-                    {{#messageContainers:i}}
-                    <li class="tab-title {{#active}}active-tab{{/active}}"
-                        on-tap="showMessageContainer">
-                        {{^pinned}}<span on-tap="closeMessageContainer:{{i}}">X</span>{{/pinned}}
+                    {{#roomConversation}}
+                    <li class="tab-title {{ selectedConversation === (.) ? 'selected-tab' : '' }}"
+                        on-tap="showRoomConversation">
+                        <span class="tab-name">{{roomName}}</span>
+                    </li>
+                    {{/roomConversation}}
+
+                    {{#userConversations:name}}
+                    {{#activeConversation}}
+                    <li class="tab-title {{ selectedConversation === (.) ? 'selected-tab' : '' }}"
+                        on-tap="showUserConversation:{{name}}">
+                        <span on-tap="closeUserConversation:{{name}}">X</span>
                         <span class="tab-name">{{name}}</span>
                     </li>
-                    {{/messageContainers}}
+                    {{/activeConversation}}
+                    {{/userConversations}}
                 </ul>
                 <div class="tab-view">
-                    {{#messageContainers:i}}
-                    <div class="tab-content {{#active}}active-tab{{/active}}">
+                    {{#roomConversation}}
+                    <div class="tab-content {{ selectedConversation === (.) ? 'selected-tab' : '' }}">
                         {{#messages}}
                         <div class="message"><span class="msg-time">{{time}}</span><a class="msg-user-name" href="#">{{userName}}:</a><span class="msg-text">{{text}}</span></div>
                         {{/messages}}
                     </div>
-                    {{/messageContainers}}
+                    {{/roomConversation}}
+
+                    {{#userConversations:name}}
+                    {{#activeConversation}}
+                    <div class="tab-content {{ selectedConversation === (.) ? 'selected-tab' : '' }}">
+                        {{#messages}}
+                        <div class="message"><span class="msg-time">{{time}}</span><a class="msg-user-name" href="#">{{userName}}:</a><span class="msg-text">{{text}}</span></div>
+                        {{/messages}}
+                    </div>
+                    {{/activeConversation}}
+                    {{/userConversations}}
                 </div>
             </div>
             <form id="chatControls" class="pure-form">
@@ -96,8 +115,8 @@
         <div id="rooms" class="pure-u-1-6 side-list">
             <h4>חדרים</h4>
             <ul>
-                {{#rooms}}
-                <li on-tap="changeRoom">{{name}}</li>
+                {{#rooms:name}}
+                <li on-tap="openRoomConversation:{{name}}">{{name}}</li>
                 {{/rooms}}
             </ul>
         </div>

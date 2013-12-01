@@ -30,7 +30,7 @@
             float: right;
         }
 
-            .tabs ul li.active-tab {
+            .tabs ul li.selected-tab {
                 background: #fff;
                 color: #0088CC;
                 height: 15px;
@@ -49,6 +49,6 @@
         height: 250px;
     }
 
-    .tabs .active-tab {
+    .tabs .selected-tab {
         display: block;
     }

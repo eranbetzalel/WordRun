@@ -1,57 +1,64 @@
 ﻿define(
-  ['config', 'jquery', 'html5shiv', 'ractive', 'moment', 'socket.io', 'underscore'],
-  function (config, $, html5Shiv, ractive, moment, io, _) {
+  ['config', 'jquery', 'html5shiv', 'ractive', 'moment', 'socket.io'],
+  function (config, $, html5Shiv, ractive, moment, io) {
     'use strict';
+
+    var stubUser = {};
+
+    var stubRoom = { usersCount: 100 };
+
+    var user1Conversation = {
+      user: stubUser,
+      activeConversation: true,
+      messages: [
+          { time: '11:22:00', userName: 'User 1', text: 'Testing messages...1' },
+          { time: '11:22:00', userName: 'User 1', text: 'Testing messages...2' },
+          { time: '11:22:00', userName: 'User 1', text: 'Testing messages...3' }
+      ]
+    };
 
     var stubData = {
       user: {
+        isLoggedIn: false,
         profile: {
           nick: '',
           gender: '',
           age: ''
-        },
-        isLoggedIn: false
-      },
-      users: [
-        { id: 1, name: 'משתמש 1' },
-        { id: 2, name: 'משתמש 2' },
-        { id: 3, name: 'משתמש 3' }
-      ],
-      rooms: [
-        { name: 'חדר 1' },
-        { name: 'חדר 2' },
-        { name: 'חדר 3' }
-      ],
-      messageContainers: [
-        {
-          name: 'לובי',
-          active: true,
-          pinned: true,
-          messages: [
-            { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
-            { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
-            { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' }
-          ]
-        },
-        {
-          userId: 1,
-          name: 'משתמש 1',
-          messages: [
-            { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
-            { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' },
-            { time: '11:22:00', userName: 'משתמש 1', text: 'בדיקה... בדיקה... 123' }
-          ],
-        },
-        {
-          userId: 2,
-          name: 'משתמש 2',
-          messages: [
-            { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
-            { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
-            { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' }
-          ],
         }
-      ],
+      },
+      users: {
+        'User 1': stubUser,
+        'User 2': {},
+        'User 3': {},
+        'User 4': {},
+        'User 5': {}
+      },
+      rooms: {
+        'Lobby': stubRoom,
+        'Room1': { usersCount: 110 },
+        'Room2': { usersCount: 120 }
+      },
+      selectedConversation: user1Conversation,
+      roomConversation: {
+        room: stubRoom,
+        roomName: 'Lobby',
+        messages: [
+            { time: '11:22:00', userName: 'User1', text: 'Testing messages...1' },
+            { time: '11:22:00', userName: 'User2', text: 'Testing messages...2' },
+            { time: '11:22:00', userName: 'User3', text: 'Testing messages...3' }
+        ]
+      },
+      userConversations: {
+        'User 1': user1Conversation,
+        'User 2': {
+          user: stubUser,
+          messages: [
+              { time: '11:22:00', userName: 'User 2', text: 'Testing messages...1' },
+              { time: '11:22:00', userName: 'User 2', text: 'Testing messages...2' },
+              { time: '11:22:00', userName: 'User 2', text: 'Testing messages...3' }
+          ]
+        }
+      }
     };
 
     var ChatApp = ractive.extend({
@@ -71,68 +78,63 @@
               $('.modal-background').fadeOut(400);
             });
           },
-          showMessageContainer: function (event) {
-            var messageContainers = this.get('messageContainers');
-
-            var activeMessageContainer = _.findWhere(messageContainers, { active: true });
-            var activeMessageContainerIndex = _.indexOf(messageContainers, activeMessageContainer);
-
-            this.set('messageContainers.' + activeMessageContainerIndex + '.active', false);
-            this.set(event.keypath + '.active', true);
+          showRoomConversation: function (event) {
+            this.set('selectedConversation', this.data.roomConversation);
           },
-          closeMessageContainer: function (event, index) {
+          showUserConversation: function (event, userName) {
+            this.set('userConversations.' + userName + '.activeConversation', true);
+            this.set('selectedConversation', this.get('userConversations.' + userName));
+          },
+          openUserConversation: function (event, userName) {
+            var userConversation = this.get('userConversations.' + userName);
+
+            if (this.data.selectedConversation === userConversation)
+              return;
+
+            if (userConversation === undefined) {
+              this.set('userConversations.' + userName,
+                {
+                  user: this.get('users.' + userName),
+                  messages: [
+                      { time: '11:22:00', userName: userName, text: 'Testing messages...1' },
+                      { time: '11:22:00', userName: userName, text: 'Testing messages...2' },
+                      { time: '11:22:00', userName: userName, text: 'Testing messages...3' }
+                  ]
+                });
+            }
+
+            this.fire('showUserConversation', event, userName);
+          },
+          closeUserConversation: function (event, userName) {
             event.original.stopPropagation();
 
-            if (event.context.active)
-              this.set('messageContainers.' + (index - 1) + '.active', true);
+            var userConversation = this.get('userConversations.' + userName);
 
-            var messageContainers = this.get('messageContainers');
+            if (this.data.selectedConversation === userConversation)
+              this.fire('showRoomConversation');
 
-            messageContainers.splice(index, 1);
+            this.set('userConversations.' + userName + '.activeConversation', false);
           },
-          changeRoom: function (event) { },
-          openPrivateMessage: function (event, userId) {
-            var messageContainers = this.get('messageContainers');
-
-            var userMessageContainer = _.findWhere(messageContainers, { userId: userId });
-
-            if (userMessageContainer == undefined) {
-              var activeMessageContainer = _.findWhere(messageContainers, { active: true });
-              var activeMessageContainerIndex = _.indexOf(messageContainers, activeMessageContainer);
-              this.set('messageContainers.' + activeMessageContainerIndex + '.active', false);
-
-              messageContainers.push({
-                userId: userId,
-                name: '',
-                active: true,
-                messages: [
-                  { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
-                  { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' },
-                  { time: '11:22:00', userName: 'משתמש 2', text: 'בדיקה... בדיקה... 123' }
-                ],
-              });
-
-              var userMessageContainerIndex = _.indexOf(messageContainers, userMessageContainer);
-
-              this.set('messageContainers.' + userMessageContainerIndex + '.active', true);
-
-              return;
+          openRoomConversation: function (event, roomName) {
+            var newRoomConversation = {
+              room: this.get('rooms.' + roomName),
+              roomName: roomName,
+              messages: [
+                  { time: '11:22:00', userName: 'User1', text: 'Testing messages...1' },
+                  { time: '11:22:00', userName: 'User2', text: 'Testing messages...2' },
+                  { time: '11:22:00', userName: 'User2', text: 'Testing messages...2' },
+                  { time: '11:22:00', userName: 'User2', text: 'Testing messages...2' },
+                  { time: '11:22:00', userName: 'User3', text: 'Testing messages...3' }
+              ]
             }
 
-            if (!userMessageContainer.active) {
-              var activeMessageContainer = _.findWhere(messageContainers, { active: true });
-              var activeMessageContainerIndex = _.indexOf(messageContainers, activeMessageContainer);
-              this.set('messageContainers.' + activeMessageContainerIndex + '.active', false);
-
-              var userMessageContainerIndex = _.indexOf(messageContainers, userMessageContainer);
-
-              this.set('messageContainers.' + userMessageContainerIndex + '.active', true);
-            }
+            this.set('roomConversation', newRoomConversation);
+            this.set('selectedConversation', newRoomConversation);
           },
           sendMessage: function (event) {
             event.original.preventDefault();
 
-            var messages = this.get('messages');
+            var messages = this.data.selectedConversation.messages;
 
             if (messages.length > config.maxTextMessages)
               messages.splice(0, 1);
@@ -140,7 +142,7 @@
             messages.push(
               {
                 time: new Date(),
-                userName: this.get('user.name'),
+                userName: this.data.user.name,
                 text: textToSend.value
               });
 
