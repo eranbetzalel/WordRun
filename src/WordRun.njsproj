@@ -28,6 +28,7 @@
     <Content Include="public\favicon.ico" />
     <Content Include="public\css\index.css" />
     <Content Include="public\css\modal.css" />
+    <Compile Include="public\js\stub.js" />
     <Compile Include="stats.js" />
     <Compile Include="chat.js" />
     <Compile Include="config.js" />

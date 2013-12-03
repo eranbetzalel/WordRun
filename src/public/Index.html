@@ -91,7 +91,7 @@
                     {{#roomConversation}}
                     <div class="tab-content {{ selectedConversation === (.) ? 'selected-tab' : '' }}">
                         {{#messages}}
-                        <div class="message"><span class="msg-time">{{time}}</span><a class="msg-user-name" href="#">{{userName}}:</a><span class="msg-text">{{text}}</span></div>
+                          {{>message}}
                         {{/messages}}
                     </div>
                     {{/roomConversation}}
@@ -100,7 +100,7 @@
                     {{#activeConversation}}
                     <div class="tab-content {{ selectedConversation === (.) ? 'selected-tab' : '' }}">
                         {{#messages}}
-                        <div class="message"><span class="msg-time">{{time}}</span><a class="msg-user-name" href="#">{{userName}}:</a><span class="msg-text">{{text}}</span></div>
+                          {{>message}}
                         {{/messages}}
                     </div>
                     {{/activeConversation}}
@@ -108,7 +108,7 @@
                 </div>
             </div>
             <form id="chatControls" class="pure-form">
-                <input class="pure-input-1-2" id="textToSend" type="text" on-enter="sendMessage" />
+                <input class="pure-input-1-2" id="textToSend" type="text" on-enter="sendMessage" autocomplete="off" />
                 <button class="pure-button pure-button-primary" on-tap="sendMessage">שלח</button>
             </form>
         </div>
@@ -120,6 +120,13 @@
                 {{/rooms}}
             </ul>
         </div>
+        <!-- {{>message}} -->
+        <div class="message">
+            <span class="msg-time">{{time}}</span>
+            <span class="msg-user-name" on-tap="openUserConversation:{{userName}}">{{userName}}:</span>
+            <span class="msg-text">{{text}}</span>
+        </div>
+        <!-- {{/message}} -->
     </script>
 </body>
 </html>
