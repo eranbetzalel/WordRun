@@ -19,38 +19,36 @@
                     <fieldset>
                         <legend>פרטי משתמש</legend>
                         <div class="pure-control-group">
-                            <label for="nick">כינוי</label>
-                            <input id="nick" type="text" placeholder="הכנס כינוי..." value="{{nick}}" />
+                            <label for="name">כינוי</label>
+                            <input id="name" type="text" placeholder="הכנס כינוי..." value="{{user.profile.name}}" />
                         </div>
 
                         <div class="pure-control-group">
                             <label for="age">גיל</label>
-                            <select id="age" class="form-control" value="{{age}}">
-                                <option>-גיל-</option>
-                                <option>21</option>
-                                <option>22</option>
-                                <option>23</option>
-                                <option>24</option>
-                                <option>25</option>
+                            <select id="age" class="form-control" value='{{user.profile.age}}'>
+                                <option >-גיל-</option>
+                                {{#getValidAges()}}
+                                <option value="{{(.)}}">{{(.)}}</option>
+                                {{/getValidAges()}}
                             </select>
                         </div>
 
                         <div class="pure-control-group">
                             <label>מין</label>
                             <label for="genderMale" class="pure-radio">
-                                <input id="genderMale" type="radio" name="{{gender}}" value="male" />
+                                <input id="genderMale" type="radio" name="{{user.profile.gender}}" value="male" />
                                 זכר
                             </label>
 
                             <label for="genderFemale" class="pure-radio">
-                                <input id="genderFemale" type="radio" name="{{gender}}" value="female" />
+                                <input id="genderFemale" type="radio" name="{{user.profile.gender}}" value="female" />
                                 נקבה
                             </label>
                         </div>
 
                         <div class="pure-controls">
-                            <label for="cb" class="pure-checkbox">
-                                <input id="cb" type="checkbox" checked="{{saveUserInfo}}" />שמור את פרטי המשתמש</label>
+                            <label for="saveUserInfo" class="pure-checkbox">
+                                <input id="saveUserInfo" type="checkbox" checked="{{user.profile.saveUserInfo}}" />שמור את פרטי המשתמש</label>
 
                             <button id="submitLoginInfo" class="pure-button pure-button-primary" on-tap="tryLogin">היכנס לצ'אט</button>
                         </div>
@@ -62,8 +60,8 @@
         <div id="users" class="pure-u-1-6 side-list">
             <h4>משתמשים</h4>
             <ul>
-                {{#users:name}}
-                <li on-tap="openUserConversation:{{name}}">{{name}}</li>
+                {{#users}}
+                <li on-tap="openUserConversation:{{name}}">{{.}}</li>
                 {{/users}}
             </ul>
         </div>
@@ -73,7 +71,7 @@
                     {{#roomConversation}}
                     <li class="tab-title {{ selectedConversation === (.) ? 'selected-tab' : '' }}"
                         on-tap="showRoomConversation">
-                        <span class="tab-name">{{roomName}}</span>
+                        <span class="tab-name">{{room.name}}</span>
                     </li>
                     {{/roomConversation}}
 
@@ -115,8 +113,8 @@
         <div id="rooms" class="pure-u-1-6 side-list">
             <h4>חדרים</h4>
             <ul>
-                {{#rooms:name}}
-                <li on-tap="openRoomConversation:{{name}}">{{name}}</li>
+                {{#rooms}}
+                <li on-tap="openRoomConversation:{{name}}">{{.}}</li>
                 {{/rooms}}
             </ul>
         </div>

@@ -21,6 +21,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Compile Include="users.js" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
     <Content Include="public\css\tabs.css" />
@@ -28,6 +29,7 @@
     <Content Include="public\favicon.ico" />
     <Content Include="public\css\index.css" />
     <Content Include="public\css\modal.css" />
+    <Compile Include="rooms.js" />
     <Compile Include="public\js\stub.js" />
     <Compile Include="stats.js" />
     <Compile Include="chat.js" />

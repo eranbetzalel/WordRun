@@ -7,7 +7,7 @@ var chat = require('./chat.js');
 
 var app = express();
 var server = http.createServer(app);
-var io = socketIo.listen(server, { 'log level': 1 });
+var io = socketIo.listen(server);
 
 app.configure(function () {
   app.use(express.favicon('public/favicon.ico'));
@@ -28,6 +28,6 @@ app.get("/", function (req, res) {
 });
 
 server.listen(config.httpPort, function () {
-  chat.initialize(io);
+  chat.init(io);
   console.log('Word Run is listening on port ' + config.httpPort + '...');
 });
