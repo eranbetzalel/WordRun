@@ -14,6 +14,10 @@ exports.getRoomNames = function getRoomNames(roomName) {
   return _.keys(_rooms);
 }
 
+exports.getRoom = function getRoom(roomName) {
+  return _rooms[roomName];
+}
+
 function addRoom(roomName) {
   var room  = _rooms[roomName];
   

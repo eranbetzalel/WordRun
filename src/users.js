@@ -59,10 +59,9 @@ function login(userProfile, responseCallback) {
   if(!user) {
     user = addUser(userProfile.name, userProfile, socket);
 
-    //socket.on('joinRoom', userJoinRoom);
-    //socket.on('changeRoom', changeRoom);
-    //socket.on('privateMessage', userSendPrivateMessage);
-    //socket.on('roomMessage', userSendRoomMessage);
+    socket.on('changeRoom', changeRoom);
+    socket.on('sendPrivateMessage', userSendPrivateMessage);
+    socket.on('sendRoomMessage', userSendRoomMessage);
   }
   
   if(!user.room)
@@ -88,26 +87,52 @@ function validateUserProfile(userProfile) {
     return 'Missing username';
 }
 
-//function changeRoom(roomName) {
-//  var socket = this;
-//}
+function changeRoom(roomName, responseCallback) {
+  var socket = this;
 
-//function userSendPrivateMessage(privateMessage) {
-//  var socket = this;
-//}
+  var room = _rooms.getRoom(roomName);
 
-//exports.userSendRoomMessage = function (message) {
-//  var socket = this;
+  if(!room) {
+    responseCallback({
+      error: 'Could not find room.'
+    });
 
-//  socket.broadcast.to(socket.user.room).emit('message', message);
+    return;
+  }
 
-//  var messages = _rooms[roomName].lastMessages;
+  responseCallback({
+    lastMessages: room.lastMessages
+  });
+}
 
-//  if (messages.length > config.maxRoomLastMessages)
-//    messages.shift();
+function userSendPrivateMessage(privateMessage) {
+  var socket = this;
 
-//  messages.push(message);
-//}
+  var user = _users[privateMessage.userName];
+
+  if(!user)
+    return;
+  
+  user.socket.emit('newPrivateMessage', privateMessage);
+}
+
+function userSendRoomMessage(messageText) {
+  var socket = this;
+
+  var message = {
+    userName: socket.user.profile.name,
+    message: messageText
+  };
+
+  _io.sockets.in(socket.user.room.name).emit('newRoomMessage', message);
+
+  var lastMessages = socket.user.room.lastMessages;
+
+  if (lastMessages.length > config.maxRoomLastMessages)
+    lastMessages.shift();
+
+  lastMessages.push(message);
+}
 
 function logout() {
   var socket = this;

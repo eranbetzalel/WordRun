@@ -20,12 +20,12 @@
                         <legend>פרטי משתמש</legend>
                         <div class="pure-control-group">
                             <label for="name">כינוי</label>
-                            <input id="name" type="text" placeholder="הכנס כינוי..." value="{{user.profile.name}}" />
+                            <input id="name" type="text" placeholder="הכנס כינוי..." value="{{currentUser.name}}" />
                         </div>
 
                         <div class="pure-control-group">
                             <label for="age">גיל</label>
-                            <select id="age" class="form-control" value='{{user.profile.age}}'>
+                            <select id="age" class="form-control" value='{{currentUser.age}}'>
                                 <option >-גיל-</option>
                                 {{#getValidAges()}}
                                 <option value="{{(.)}}">{{(.)}}</option>
@@ -36,21 +36,21 @@
                         <div class="pure-control-group">
                             <label>מין</label>
                             <label for="genderMale" class="pure-radio">
-                                <input id="genderMale" type="radio" name="{{user.profile.gender}}" value="male" />
+                                <input id="genderMale" type="radio" name="{{currentUser.gender}}" value="male" />
                                 זכר
                             </label>
 
                             <label for="genderFemale" class="pure-radio">
-                                <input id="genderFemale" type="radio" name="{{user.profile.gender}}" value="female" />
+                                <input id="genderFemale" type="radio" name="{{currentUser.gender}}" value="female" />
                                 נקבה
                             </label>
                         </div>
 
                         <div class="pure-controls">
                             <label for="saveUserInfo" class="pure-checkbox">
-                                <input id="saveUserInfo" type="checkbox" checked="{{user.profile.saveUserInfo}}" />שמור את פרטי המשתמש</label>
+                                <input id="saveUserInfo" type="checkbox" checked="{{currentUser.saveUserInfo}}" />שמור את פרטי המשתמש</label>
 
-                            <button id="submitLoginInfo" class="pure-button pure-button-primary" on-tap="tryLogin">היכנס לצ'אט</button>
+                            <button id="submitLoginInfo" class="pure-button pure-button-primary" on-tap="login">היכנס לצ'אט</button>
                         </div>
                     </fieldset>
                 </form>
@@ -61,7 +61,7 @@
             <h4>משתמשים</h4>
             <ul>
                 {{#users}}
-                <li on-tap="openUserConversation:{{name}}">{{.}}</li>
+                <li on-tap="openUserConversation:{{name}}">{{name}}</li>
                 {{/users}}
             </ul>
         </div>
@@ -78,9 +78,9 @@
                     {{#userConversations:name}}
                     {{#activeConversation}}
                     <li class="tab-title {{ selectedConversation === (.) ? 'selected-tab' : '' }}"
-                        on-tap="showUserConversation:{{name}}">
+                        on-tap="openUserConversation:{{name}}">
                         <span on-tap="closeUserConversation:{{name}}">X</span>
-                        <span class="tab-name">{{name}}</span>
+                        <span class="tab-name">{{user.name}}</span>
                     </li>
                     {{/activeConversation}}
                     {{/userConversations}}
@@ -114,7 +114,7 @@
             <h4>חדרים</h4>
             <ul>
                 {{#rooms}}
-                <li on-tap="openRoomConversation:{{name}}">{{.}}</li>
+                <li on-tap="showRoomConversation:{{name}}">{{name}}</li>
                 {{/rooms}}
             </ul>
         </div>

@@ -21,6 +21,20 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Compile Include="public\js\lib\Ractive-Backbone.min.js" />
+    <Compile Include="public\js\models\BaseUser.js" />
+    <Compile Include="public\js\models\ChatData.js" />
+    <Compile Include="public\js\models\ChatUser.js" />
+    <Compile Include="public\js\models\ChatUsers.js" />
+    <Compile Include="public\js\models\RoomConversation.js" />
+    <Compile Include="public\js\models\UserConversation.js" />
+    <Compile Include="public\js\models\Conversation.js" />
+    <Compile Include="public\js\models\UserConversations.js" />
+    <Compile Include="public\js\models\CurrentUser.js" />
+    <Compile Include="public\js\models\Message.js" />
+    <Compile Include="public\js\models\Messages.js" />
+    <Compile Include="public\js\models\Room.js" />
+    <Compile Include="public\js\models\Rooms.js" />
     <Compile Include="users.js" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
@@ -34,7 +48,7 @@
     <Compile Include="stats.js" />
     <Compile Include="chat.js" />
     <Compile Include="config.js" />
-    <Compile Include="public\js\chat.js" />
+    <Compile Include="public\js\app.js" />
     <Compile Include="public\js\config.js" />
     <Compile Include="public\js\init.js" />
   </ItemGroup>
@@ -42,6 +56,8 @@
     <Folder Include="public" />
     <Folder Include="public\css" />
     <Folder Include="public\js" />
+    <Folder Include="public\js\lib\" />
+    <Folder Include="public\js\models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
