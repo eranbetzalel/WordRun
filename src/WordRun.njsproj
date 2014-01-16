@@ -35,6 +35,8 @@
     <Compile Include="public\js\models\Messages.js" />
     <Compile Include="public\js\models\Room.js" />
     <Compile Include="public\js\models\Rooms.js" />
+    <Compile Include="room.js" />
+    <Compile Include="user.js" />
     <Compile Include="users.js" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
@@ -46,7 +48,7 @@
     <Compile Include="rooms.js" />
     <Compile Include="public\js\stub.js" />
     <Compile Include="stats.js" />
-    <Compile Include="chat.js" />
+    <Compile Include="chatServer.js" />
     <Compile Include="config.js" />
     <Compile Include="public\js\app.js" />
     <Compile Include="public\js\config.js" />

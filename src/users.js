@@ -1,96 +1,103 @@
-﻿var _ = require('underscore');
-var config = require('./config.js');
-var _rooms = require('./rooms.js');
-var _stats = require('./stats.js');
+﻿var _ = require('underscore')
+  , config = require('./config')
+  , stats = require('./stats')
+  , Rooms = require('./rooms')
+  , User = require('./user');
 
-var _io;
-var _users = { };
+exports = module.exports = Users;
 
-exports.init = function (io) {
-  _io = io;
+function Users(io) {
+  this._io = io;
+  this._users = {};
+  this._rooms = new Rooms();
 
-  _io.sockets.on('connection', newConnection);
+  var self = this;
+
+  this._io.sockets.on('connection', function (socket) {
+    self.onConnection(socket);
+  });
 }
 
-function getUserNames() {
-  return _.keys(_users);
+Users.prototype.getUserNames = function () {
+  return _.keys(this._users);
 }
 
-function addUser(userName, userProfile, socket) {
-  var user = _users[userName];
-
-  if(user)
-    removeUser(userName);
-
-  user = {
-    socket: socket,
-    profile: userProfile
-  };
-
-  _users[userName] = user;
-  socket.user = user;
-
-  return user;
+Users.prototype.getUser = function (userName) {
+  return this._users[userName];
 }
 
-function removeUser(userName) {
-  delete _users[userName];
+Users.prototype.addUser = function (user) {
+  this._users[user.id] = user;
 }
 
-function newConnection(socket) {
-  socket.on('login', login);
-  socket.on('disconnect', logout);
-
-  _stats.newConnection();
+Users.prototype.removeUser = function (userId) {
+  delete this._users[userId];
 }
 
-function login(userProfile, responseCallback) {
-  var validationError = validateUserProfile(userProfile);
-  
-  if(validationError) {
-    responseCallback({error: validationError});
+Users.prototype.onConnection = function (socket) {
+  var user = new User(socket);
 
+  var self = this;
+
+  socket.on('login', function (userProfile, responseCallback) {
+     self.onUserLogin(this, userProfile, responseCallback);
+  });
+
+  socket.on('disconnect', function () {
+     self.onDisconnect(this);
+  });
+
+  stats.newConnection();
+}
+
+Users.prototype.onDisconnect = function (socket) {
+  if(socket.user)
+    this.removeUser(socket.user.id);
+
+  stats.logout();
+}
+
+Users.prototype.onUserLogin = function (socket, userProfile, responseCallback) {
+  var user = socket.user;
+
+  if(!user.setProfile(
+    userProfile, function (error) { responseCallback({error: error}); }))
     return;
-  }
 
-  var socket = this;
-  var user = _users[userProfile.userName];
+  this.addUser(user);
 
-  if(!user) {
-    user = addUser(userProfile.name, userProfile, socket);
+  var userSocket = user.socket;
 
-    socket.on('changeRoom', changeRoom);
-    socket.on('sendPrivateMessage', userSendPrivateMessage);
-    socket.on('sendRoomMessage', userSendRoomMessage);
-  }
-  
-  if(!user.room)
-    _rooms.userJoinRoom(user, config.mainRoomName);
+  var self = this;
+
+  socket.on('changeRoom', function (roomName, responseCallback) {
+     self.onUserChangeRoom(this, roomName, responseCallback);
+  });
+
+  socket.on('sendPrivateMessage', function (privateMessage) {
+     self.onUserSendPrivateMessage(privateMessage);
+  });
+
+  socket.on('sendRoomMessage', function (messageText) {
+     self.onUserSendRoomMessage(this, messageText);
+  });
+
+  var userRoom = this._rooms.userJoinRoom(user, config.mainRoomName);
 
   responseCallback({ 
     userRoom: {
-      name: user.room.name,
-      lastMessages: user.room.lastMessages
+      name: userRoom.name,
+      lastMessages: userRoom.lastMessages
     },
-    userNames: getUserNames(),
-    roomNames: _rooms.getRoomNames()
+    userNames: this.getUserNames(),
+    roomNames: this._rooms.getRoomNames()
   });
 
-  _stats.login();
+  stats.login();
 }
 
-function validateUserProfile(userProfile) {
-  if(!userProfile)
-    return 'Empty user profile';
-
-  if(!userProfile.name)
-    return 'Missing username';
-}
-
-function changeRoom(roomName, responseCallback) {
-  var socket = this;
-
-  var room = _rooms.getRoom(roomName);
+Users.prototype.onUserChangeRoom = function (socket, roomName, responseCallback) {
+  var room = this._rooms.getRoom(roomName);
 
   if(!room) {
     responseCallback({
@@ -100,45 +107,40 @@ function changeRoom(roomName, responseCallback) {
     return;
   }
 
+  this._rooms.userJoinRoom(socket.user, roomName);
+
   responseCallback({
     lastMessages: room.lastMessages
   });
 }
 
-function userSendPrivateMessage(privateMessage) {
-  var socket = this;
+Users.prototype.onUserSendPrivateMessage = function (privateMessage) {
+  var user = this.getUser(privateMessage.userName);
 
-  var user = _users[privateMessage.userName];
+  if(!user) {
+    console.log('Could not find user ' + privateMessage.userName + '.');
 
-  if(!user)
     return;
+  }
   
   user.socket.emit('newPrivateMessage', privateMessage);
 }
 
-function userSendRoomMessage(messageText) {
-  var socket = this;
+Users.prototype.onUserSendRoomMessage = function (socket, messageText) {
+  var user = socket.user;
+  var userRoom = this._rooms.getUserRoom(user);
 
   var message = {
-    userName: socket.user.profile.name,
+    userName: user.name,
     message: messageText
   };
 
-  _io.sockets.in(socket.user.room.name).emit('newRoomMessage', message);
+  this._io.sockets.in(userRoom.name).emit('newRoomMessage', message);
 
-  var lastMessages = socket.user.room.lastMessages;
+  var lastMessages = userRoom.lastMessages;
 
   if (lastMessages.length > config.maxRoomLastMessages)
     lastMessages.shift();
 
   lastMessages.push(message);
-}
-
-function logout() {
-  var socket = this;
-
-  if(socket.user)
-    removeUser(socket.user.profile.name);
-
-  _stats.logout();
 }

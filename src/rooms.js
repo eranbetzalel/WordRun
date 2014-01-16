@@ -1,76 +1,86 @@
-﻿var _ = require('underscore');
-var config = require('./config.js');
+﻿var _ = require('underscore')
+  , config = require('./config.js')
+  , Room = require('./room.js');
 
-var _io;
-var _rooms = { };
+exports = module.exports = Rooms;
 
-exports.init = function init(io) {
-  _io = io;
+function Rooms() {
+  this._rooms = {};
+  this._userRoom = {};
 
-  config.defaultRoomNames.forEach(addRoom);
+  var self = this;
+
+  config.defaultRoomNames.forEach(function(roomName) { 
+    var room = self.addRoom(roomName);
+
+    room.isPermanent = true;
+  });
 }
 
-exports.getRoomNames = function getRoomNames(roomName) {
-  return _.keys(_rooms);
+Rooms.prototype.getRoomNames = function () {
+  return _.keys(this._rooms);
 }
 
-exports.getRoom = function getRoom(roomName) {
-  return _rooms[roomName];
+Rooms.prototype.getRoom = function (roomName) {
+  return this._rooms[roomName];
 }
 
-function addRoom(roomName) {
-  var room  = _rooms[roomName];
+Rooms.prototype.getUserRoom = function (user) {
+  return this._userRoom[user.id];
+}
+
+Rooms.prototype.addRoom = function (roomName) {
+  var room  = this._rooms[roomName];
   
   if(room)
-    removeRoom(roomName);
+    return room;
 
-  room = {
-    name: roomName,
-    users: {},
-    lastMessages: []
-  };
+  room = new Room(roomName);
 
-  _rooms[roomName] = room;
+  this._rooms[roomName] = room;
 
   return room;
 }
 
-function removeRoom(roomName) {
-  delete _rooms[roomName];
+Rooms.prototype.removeRoom = function (roomName) {
+  var room = this._rooms[roomName];
+
+  if(room.isPermanent)
+    return;
+
+  delete this._rooms[roomName];
 }
 
-exports.userJoinRoom = function userJoinRoom(user, roomName) {
+Rooms.prototype.userJoinRoom = function (user, roomName) {
   var socket = user.socket;
+  var userRoom = this._userRoom[user.id];
 
-  if(user.room && user.room.name === roomName)
-    return user.room;
+  if(userRoom)
+  {
+    //  User is already in that room
+    if(userRoom.name === roomName)
+      return userRoom;
 
-  if(user.room)
-    userLeaveRoom(user, roomName);
+    //  Leaves current room to join a new one
+    this.userLeaveRoom(user, roomName);
+  }
 
-  var newRoom;
+  var newRoom = this._rooms[roomName];
 
-  if(!_rooms[roomName]) {
+  if(!newRoom)
     newRoom  = this.addRoom(roomName);
-  }
-  else {
-    newRoom = _rooms[roomName];
-  }
 
   socket.join(newRoom.name);
+  
+  this._userRoom[user.id] = newRoom;
 
-  user.room = newRoom;
-
-  newRoom.users[user.profile.name] = user;
+  return newRoom;
 }
 
-function userLeaveRoom(user, roomName)  {
-  var room = _rooms[roomName];
+Rooms.prototype.userLeaveRoom = function (user, roomName)  {
+  var room = this._rooms[roomName];
 
   user.socket.leave(room.name);
 
-  room.users[user.name] = null;
-
-  if(room.users === {})
-    delete room;
+  delete this._userRoom[user.id];
 }
