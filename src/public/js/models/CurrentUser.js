@@ -32,6 +32,8 @@
             
             socket.on('newPrivateMessage', function (message) { self.trigger('newPrivateMessage', message); })
             socket.on('newRoomMessage', function (message) { self.trigger('newRoomMessage', message); })
+            socket.on('joinedRoom', function (user) { self.trigger('joinedRoom', user); })
+            socket.on('leftRoom', function (user) { self.trigger('leftRoom', user); })
             
             if(success)
               success(response);

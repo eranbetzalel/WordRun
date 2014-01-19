@@ -110,6 +110,7 @@ Users.prototype.onUserChangeRoom = function (socket, roomName, responseCallback)
   this._rooms.userJoinRoom(socket.user, roomName);
 
   responseCallback({
+    userNames: room.getUserNames(),
     lastMessages: room.lastMessages
   });
 }

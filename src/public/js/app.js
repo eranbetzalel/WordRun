@@ -20,12 +20,14 @@
 
         chatData.currentUser.login(
           function (response) {
-            chatData.users.initFromUserNames(response.userNames);
             chatData.rooms.initFromRoomNames(response.roomNames);
 
             var userRoom = chatData.rooms.getRoomByName(response.userRoom.name);
 
-            chatData.roomConversation.changeRoom(userRoom, response.userRoom.lastMessages);
+            chatData.roomConversation.changeRoom(
+              userRoom, 
+              response.userRoom.lastMessages,
+              response.userNames);
 
             chatApp.fire('showRoomConversation');
 
@@ -43,6 +45,14 @@
               chatData.userConversations.addMessage(response.userName, response.message);
             });
 
+            chatData.currentUser.on('joinedRoom', function (user) {
+              chatData.userConversations.addMessage(response.userName, response.message);
+            });
+
+            chatData.currentUser.on('leftRoom', function (user) {
+              chatData.userConversations.addMessage(response.userName, response.message);
+            });
+
             $('.modal').fadeOut(150, function () {
                 $('.modal-background').fadeOut(400);
             });
@@ -54,7 +64,7 @@
         if(chatData.currentUser.name === userName)
           return;
 
-        var user = chatData.users.getUserByName(userName);
+        var user = chatData.roomConversation.users.getUserByName(userName);
 
         if(!user)
           return;
@@ -70,7 +80,7 @@
       },
 
       closeUserConversation: function (event, userName) {
-        var user = chatData.users.getUserByName(userName);
+        var user = chatData.roomConversation.users.getUserByName(userName);
 
         var userConversation = chatData.userConversations.closeConversation(user);
       
@@ -89,7 +99,10 @@
         var room = chatData.rooms.getRoomByName(roomName);
 
         chatData.currentUser.changeRoom(room, function (response) {
-          chatData.roomConversation.changeRoom(room, response.lastMessages);
+          chatData.roomConversation.changeRoom(
+            room, 
+            response.lastMessages, 
+            response.userNames);
 
           chatData.selectedConversation = chatData.roomConversation;
         });

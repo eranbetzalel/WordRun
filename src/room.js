@@ -1,8 +1,14 @@
-﻿var room = function Room(roomName) {
+﻿var _ = require('underscore');
+
+exports = module.exports = Room;
+
+function Room(roomName) {
   this.name = roomName;
   this.users = {};
   this.lastMessages = [];
   this.isPermanent = false;
 }
 
-module.exports = room;
+Room.prototype.getUserNames = function () {
+  return _.keys(this.users);
+}

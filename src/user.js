@@ -1,4 +1,6 @@
-﻿var User = function User(socket) {
+﻿exports = module.exports = User;
+
+function User(socket) {
   this.name = null;
   this.age = null;
   this.gender = null;
@@ -11,7 +13,7 @@ User.prototype.__defineGetter__('id', function () {
   return this.name;
 });
 
-User.prototype.setProfile = function setProfile(userProfile, failed) {
+User.prototype.setProfile = function (userProfile, failed) {
   var error;
 
   if(!userProfile) {
@@ -33,4 +35,11 @@ User.prototype.setProfile = function setProfile(userProfile, failed) {
   return true;
 }
 
-module.exports = User;
+User.prototype.toJSON = function () {
+  return {
+      id : this.id,
+      name : this.name,
+      age : this.age,
+      gender : this.gender
+    };
+}

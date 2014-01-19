@@ -71,6 +71,7 @@ Rooms.prototype.userJoinRoom = function (user, roomName) {
     newRoom  = this.addRoom(roomName);
 
   socket.join(newRoom.name);
+  socket.broadcast.to(newRoom.name).emit('joinedRoom', user.toJSON());
   
   this._userRoom[user.id] = newRoom;
 
@@ -81,6 +82,7 @@ Rooms.prototype.userLeaveRoom = function (user, roomName)  {
   var room = this._rooms[roomName];
 
   user.socket.leave(room.name);
+  socket.broadcast.to(newRoom.name).emit('leftRoom', user.toJSON());
 
   delete this._userRoom[user.id];
 }

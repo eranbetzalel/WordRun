@@ -5,7 +5,6 @@
 
     var chatData =  {
       currentUser: new CurrentUser(),
-      users: new ChatUsers(),
       rooms: new Rooms(),
       roomConversation: new RoomConversation(),
       userConversations: new UserConversations(),

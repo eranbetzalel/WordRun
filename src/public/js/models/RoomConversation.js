@@ -1,15 +1,19 @@
 ﻿define(
-  ['Backbone', 'models/messages', 'models/conversation', 'underscore'],
-  function (Backbone, Messages, Conversation, _) {
+  ['Backbone', 'models/messages', 'models/conversation', 'models/ChatUsers', 'underscore'],
+  function (Backbone, Messages, Conversation, ChatUsers, _) {
     'use strict';
 
     var roomConversation = Conversation.extend({
       defaults: _.extend({
-        room: null
+        room: null,
+        users: null
       },
       Conversation.prototype.defaults),
 
-      changeRoom: function (room, lastMessages) {
+      changeRoom: function (room, lastMessages, userNames) {
+        this.users = new ChatUsers();
+        this.users.initFromUserNames(userNames);
+
         this.set({
           room: room,
           messages: new Messages(lastMessages)
