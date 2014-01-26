@@ -1,28 +1,41 @@
 ﻿define(
-  ['Backbone', 'models/baseUser', 'underscore', 'socket.io', 'models/chatData'],
-  function (Backbone, BaseUser, _ , io, chatData) {
+  ['Backbone', 'models/baseUser', 'underscore', 'jquery' , 'socket.io', 'models/chatData'],
+  function (Backbone, BaseUser, _ , $, io, chatData) {
     'use strict';
 
     var currentUser = BaseUser.extend({
       defaults: _.extend({
-          saveUserInfo: false
+          saveUserInfo: false,
+          loggedIn: false
         },
         BaseUser.prototype.defaults),
 
       initialize: function () {
-        this._socket = null;
+        var self = this;
+
+        //  TODO: should be handled with events - not async:false
+        $.ajax({
+          dataType: "json",
+          url: '/isLoggedIn',
+          data: null,
+          async: false
+        })
+        .done(function (data) {
+          self.loggedIn = data.loggedIn;
+
+          self._socket = io.connect('http://localhost:3000');
+        });
       },
 
       login: function (success, failed) {
-        if(!this._socket)
-          this._socket = io.connect('http://localhost:3000');
-
         var self = this;
         var socket = this._socket;
 
+        var profileJSON = this.loggedIn ? null : this.toJSON();
+
         socket.emit(
           'login',
-          this.toJSON(),
+          profileJSON,
           function (response) {
             if (failed && response.error) {
               failed(response.error);

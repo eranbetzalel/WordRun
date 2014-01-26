@@ -38,6 +38,7 @@
     <Compile Include="room.js" />
     <Compile Include="user.js" />
     <Compile Include="users.js" />
+    <Compile Include="utils\socketIoSession.js" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
     <Content Include="public\css\tabs.css" />
@@ -55,6 +56,7 @@
     <Compile Include="public\js\init.js" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="utils\" />
     <Folder Include="public" />
     <Folder Include="public\css" />
     <Folder Include="public\js" />

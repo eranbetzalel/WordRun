@@ -9,21 +9,22 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     text-align: center;
+    display: none;
 }
 
-.modal {
-    position: relative;
-    top: 20%;
-    background-color: white;
-    padding: 2em;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-    margin: 0 auto;
-    display: inline-block;
-    margin: 0 auto;
-    max-width: 100%;
-    max-height: 100%;
-    overflow-y: auto;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    text-align: right;
-}
+    .modal-background .modal {
+        position: relative;
+        top: 20%;
+        background-color: white;
+        padding: 2em;
+        box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        margin: 0 auto;
+        display: inline-block;
+        margin: 0 auto;
+        max-width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        text-align: right;
+    }

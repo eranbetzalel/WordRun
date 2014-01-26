@@ -13,6 +13,8 @@ function Users(io) {
 
   var self = this;
 
+  setInterval(this.removeLoggedOutUsers, 10 * 1000);
+
   this._io.sockets.on('connection', function (socket) {
     self.onConnection(socket);
   });
@@ -34,9 +36,23 @@ Users.prototype.removeUser = function (userId) {
   delete this._users[userId];
 }
 
-Users.prototype.onConnection = function (socket) {
-  var user = new User(socket);
+Users.prototype.removeLoggedOutUsers = function () {
+  var now = new Date();
 
+  var self = this;
+
+  _.each(this._users, function (user) {
+    if(!user.loggedOutAt)
+      return;
+    
+    var loggedOutPeriod = Math.abs(now - user.loggedOutAt);
+
+    if(loggedOutPeriod >= config.disconnectedUserGracePeriod)
+      self.removeUser(user.id);
+  });
+}
+
+Users.prototype.onConnection = function (socket) {
   var self = this;
 
   socket.on('login', function (userProfile, responseCallback) {
@@ -52,37 +68,55 @@ Users.prototype.onConnection = function (socket) {
 
 Users.prototype.onDisconnect = function (socket) {
   if(socket.user)
-    this.removeUser(socket.user.id);
+    socket.user.loggedOutAt = new Date();
 
   stats.logout();
 }
 
 Users.prototype.onUserLogin = function (socket, userProfile, responseCallback) {
-  var user = socket.user;
+  var user;
 
-  if(!user.setProfile(
-    userProfile, function (error) { responseCallback({error: error}); }))
-    return;
+  if(!userProfile && socket.handshake.session.userId) {
+    //  Pulls existing user data from session
+    user = this._users[socket.handshake.session.userId];
 
-  this.addUser(user);
+    delete user.loggedOutAt;
+  }
+  else {
+    user = new User();
 
-  var userSocket = user.socket;
+    if(!user.setProfile(
+      userProfile, function (error) { responseCallback({error: error}); }))
+      return;
+
+    this.addUser(user);
+  }
+
+  user.setSocket(socket);
 
   var self = this;
 
+  //  Register to user socket events
   socket.on('changeRoom', function (roomName, responseCallback) {
-     self.onUserChangeRoom(this, roomName, responseCallback);
+    self.onUserChangeRoom(this, roomName, responseCallback);
   });
 
   socket.on('sendPrivateMessage', function (privateMessage) {
-     self.onUserSendPrivateMessage(privateMessage);
+    self.onUserSendPrivateMessage(privateMessage);
   });
 
   socket.on('sendRoomMessage', function (messageText) {
-     self.onUserSendRoomMessage(this, messageText);
+    self.onUserSendRoomMessage(this, messageText);
   });
 
+  //  User joins the main room
   var userRoom = this._rooms.userJoinRoom(user, config.mainRoomName);
+
+  //  Save user info to session
+  socket.handshake.session.userId = user.id;
+  socket.handshake.session.save();
+
+  user.loggedInAt = new Date();
 
   responseCallback({ 
     userRoom: {

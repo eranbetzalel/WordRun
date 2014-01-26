@@ -1,12 +1,9 @@
 ﻿exports = module.exports = User;
 
-function User(socket) {
+function User() {
   this.name = null;
   this.age = null;
   this.gender = null;
-
-  this.socket = socket;
-  socket.user = this;
 }
 
 User.prototype.__defineGetter__('id', function () {
@@ -42,4 +39,9 @@ User.prototype.toJSON = function () {
       age : this.age,
       gender : this.gender
     };
+}
+
+User.prototype.setSocket = function (socket) {
+  this.socket = socket;
+  socket.user = this;
 }

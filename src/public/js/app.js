@@ -16,7 +16,8 @@
 
     chatApp.on({
       login: function (event) {
-        event.original.preventDefault();
+        if(event)
+          event.original.preventDefault();
 
         chatData.currentUser.login(
           function (response) {
@@ -134,6 +135,13 @@
         textToSend.value = '';
       }
     });
+
+    if(chatData.currentUser.loggedIn) {
+      chatApp.fire('login');
+    }
+    else {
+      $('.modal-background').show();
+    }
 
     return chatApp;
   }

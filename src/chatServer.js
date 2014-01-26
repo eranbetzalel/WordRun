@@ -1,20 +1,19 @@
-﻿var Users = require('./users');
-var socketIo = require('socket.io');
+﻿var Users = require('./users')
+  , io = require('socket.io')
+  , socketIoSession = require('./utils/socketIoSession');
 
 exports = module.exports = ChatServer;
 
 function ChatServer() {
   this.io = null;
   this.users = null;
+}
 
-  var self = this;
+ChatServer.prototype.start = function (httpServer, cookieParser, sessionStore) {
+  var ioServer = io.listen(httpServer);
 
-  this.listen = function listen(server) {
-    if(!self.io) {
-      self.io = socketIo.listen(server);
-      self.users = new Users(self.io);
-    }
+  socketIoSession.injectSession(ioServer, cookieParser, sessionStore);
 
-    return self.io;
-  }
+  this.users = new Users(ioServer);
+  this.io = ioServer;
 }
