@@ -8,6 +8,7 @@
   "dependencies": {
     "express": "*",
     "socket.io": "*",
-    "underscore": "~1.5.2"
+    "underscore": "~1.5.2",
+    "connect-redis": "~1.4.6"
   }
 }

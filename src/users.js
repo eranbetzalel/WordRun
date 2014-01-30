@@ -80,7 +80,7 @@ Users.prototype.onUserLogin = function (socket, userProfile, responseCallback) {
     //  Pulls existing user data from session
     user = this._users[socket.handshake.session.userId];
 
-    delete user.loggedOutAt;
+    user.loggedOutAt = null;
   }
   else {
     user = new User();

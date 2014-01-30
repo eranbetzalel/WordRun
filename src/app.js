@@ -1,5 +1,6 @@
 var http = require('http')
   , express = require('express')
+  , RedisStore = require('connect-redis')(express)
   , config = require('./config')
   , ChatServer = require('./chatServer');
 
@@ -8,7 +9,9 @@ var chatServer = new ChatServer();
 var app = express();
 var httpServer = http.createServer(app);
 
-var sessionStore = new express.session.MemoryStore();
+var sessionStore = 
+  config.redisStore ? new RedisStore(config.redisStore) : new express.session.MemoryStore();
+
 var cookieParser = express.cookieParser(config.sessionSecret);
 
 app.configure(function () {
