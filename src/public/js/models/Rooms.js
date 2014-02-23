@@ -6,13 +6,13 @@
     var rooms = Backbone.Collection.extend({
       model: Room,
 
-      initFromRoomNames: function (roomNames) {
+      initFromRooms: function (rooms) {
         this.reset();
 
         var self = this;
 
-        _.each(roomNames, function (roomName) {
-          var room = new Room({ name: roomName });
+        _.each(rooms, function (roomData) {
+          var room = new Room(roomData);
 
           self.add(room);
         });

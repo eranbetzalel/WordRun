@@ -42,11 +42,13 @@
 
               return;
             }
-            
-            socket.on('newPrivateMessage', function (message) { self.trigger('newPrivateMessage', message); })
-            socket.on('newRoomMessage', function (message) { self.trigger('newRoomMessage', message); })
+
+            self.set(response.userData);
+
+            socket.on('newPrivateMessage', function (messageData) { self.trigger('newPrivateMessage', messageData); })
+            socket.on('newRoomMessage', function (messageData) { self.trigger('newRoomMessage', messageData); })
             socket.on('joinedRoom', function (user) { self.trigger('joinedRoom', user); })
-            socket.on('leftRoom', function (user) { self.trigger('leftRoom', user); })
+            socket.on('leftRoom', function (userId) { self.trigger('leftRoom', userId); })
             
             if(success)
               success(response);
@@ -54,10 +56,11 @@
         );
       },
 
-      changeRoom: function (room, success, error) {
-        this._socket.emit('changeRoom', room.get('name'), function (response) {  
-          if(response.error) {
-            error(response);
+      //  TODO: move to RoomConversation
+      changeRoom: function (room, success, failed) {
+        this._socket.emit('changeRoom', room.get('id'), function (response) {  
+          if(response && response.error) {
+            failed(response.error);
 
             return;
           }
@@ -66,12 +69,35 @@
         });
       },
 
-      sendRoomMessage: function (message) {
-        this._socket.emit('sendRoomMessage', message);
+      sendRoomMessage: function (messageText, failed) {
+        this._socket.emit(
+          'sendRoomMessage',
+          messageText,
+          function (response) {
+            if(response.error)
+              failed(response.error);
+          });
       },
 
-      sendPrivateMessage: function (user, message) {
-        this._socket.emit('sendPrivateMessage', message);
+      sendPrivateMessage: function (userId, messageText, success, failed) {
+        this._socket.emit(
+          'sendPrivateMessage', 
+          { toUserId: userId, text: messageText }, 
+          function (response) {
+            if(response && response.error) {
+              failed(response.error);
+
+              return;
+            }
+
+            success(response);
+          });
+      },
+
+      getUserById: function (userId, success) {
+        this._socket.emit('getUserById', userId, function (user) {
+          success(user);
+        });
       }
     });
 

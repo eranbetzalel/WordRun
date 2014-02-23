@@ -1,10 +1,8 @@
 var http = require('http')
   , express = require('express')
   , RedisStore = require('connect-redis')(express)
-  , config = require('./config')
-  , ChatServer = require('./chatServer');
-
-var chatServer = new ChatServer();
+  , mongoose = require('mongoose')
+  , config = require('./config');
 
 var app = express();
 var httpServer = http.createServer(app);
@@ -24,16 +22,32 @@ app.configure(function () {
   app.use(express.errorHandler());
 });
 
-app.get("/isLoggedIn", function (req, res) {
-  res.json({ loggedIn: req.session.userId != undefined });
+app.get("/isLoggedIn",  function (req, res) {
+  global.chatController.isUserLoggedIn(req, res)
 });
 
 app.get("*", function (req, res) {
   res.sendfile("./public/index.html");
 });
 
-httpServer.listen(config.httpPort, function () {
-  chatServer.start(httpServer, cookieParser, sessionStore);
+mongoose.connect(config.mongoDbUri);
 
-  console.log('Word Run is listening on port ' + config.httpPort + '...');
+httpServer.listen(config.httpPort, function () {
+  var ioServer = require('socket.io').listen(httpServer);
+
+  require('./utils/socketIoSession').injectSession(ioServer, cookieParser, sessionStore);
+
+  var ChatController = require('./chatController');
+
+  var UserStore = require('./stores/userStore');
+  var RoomStore = require('./stores/roomStore');
+
+  global.chatController =
+    new ChatController(ioServer, new UserStore(), new RoomStore());
+
+  global.chatController
+    .init()
+    .then(function () {
+      console.log('Word Run is listening on port ' + config.httpPort + '...');
+    });
 });

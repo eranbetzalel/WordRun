@@ -21,6 +21,9 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Compile Include="DTOs\message.js" />
+    <Compile Include="models\room.js" />
+    <Compile Include="models\user.js" />
     <Compile Include="public\js\lib\Ractive-Backbone.min.js" />
     <Compile Include="public\js\models\BaseUser.js" />
     <Compile Include="public\js\models\ChatData.js" />
@@ -35,9 +38,11 @@
     <Compile Include="public\js\models\Messages.js" />
     <Compile Include="public\js\models\Room.js" />
     <Compile Include="public\js\models\Rooms.js" />
-    <Compile Include="room.js" />
-    <Compile Include="user.js" />
-    <Compile Include="users.js" />
+    <Compile Include="utils\blueBirdUtil.js" />
+    <Compile Include="stores\roomStore.js" />
+    <Compile Include="chatController.js" />
+    <Compile Include="stores\userStore.js" />
+    <Compile Include="utils\mongoErrorResolver.js" />
     <Compile Include="utils\socketIoSession.js" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
@@ -46,16 +51,17 @@
     <Content Include="public\favicon.ico" />
     <Content Include="public\css\index.css" />
     <Content Include="public\css\modal.css" />
-    <Compile Include="rooms.js" />
     <Compile Include="public\js\stub.js" />
     <Compile Include="stats.js" />
-    <Compile Include="chatServer.js" />
     <Compile Include="config.js" />
     <Compile Include="public\js\app.js" />
     <Compile Include="public\js\config.js" />
     <Compile Include="public\js\init.js" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="models\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="stores\" />
     <Folder Include="utils\" />
     <Folder Include="public" />
     <Folder Include="public\css" />

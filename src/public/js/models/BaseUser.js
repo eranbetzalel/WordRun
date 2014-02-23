@@ -5,6 +5,7 @@
 
     var baseUserModel = Backbone.Model.extend({
       defaults: {
+        id: null,
         name: null,
         age: null,
         gender: null

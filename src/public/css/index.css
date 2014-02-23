@@ -11,12 +11,11 @@
     }
 
     .side-list li {
-        background-color: aqua;
         margin: 3px 0;
     }
 
         .side-list li:hover {
-            background-color: blue;
+            background-color: aqua;
         }
 
 #chatControls {
@@ -37,4 +36,9 @@
 
     .message * {
         float: right;
+        padding-left: 10px;
+    }
+
+    .message .msg-time {
+        font-weight: bold;
     }

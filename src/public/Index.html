@@ -56,13 +56,12 @@
                 </form>
             </div>
         </div>
-
         <div id="users" class="pure-u-1-6 side-list">
             <h4>משתמשים</h4>
             <ul>
-                {{#users}}
-                <li on-tap="openUserConversation:{{name}}">{{name}}</li>
-                {{/users}}
+                {{#roomConversation.users}}
+                <li on-tap="showUserConversation:{{id}}">{{name}}</li>
+                {{/roomConversation.users}}
             </ul>
         </div>
         <div class="pure-u-2-3">
@@ -78,8 +77,8 @@
                     {{#userConversations:name}}
                     {{#activeConversation}}
                     <li class="tab-title {{ selectedConversation === (.) ? 'selected-tab' : '' }}"
-                        on-tap="openUserConversation:{{name}}">
-                        <span on-tap="closeUserConversation:{{name}}">X</span>
+                        on-tap="showUserConversation:{{user.id}}">
+                        <span on-tap="closeUserConversation:{{user.id}}">X</span>
                         <span class="tab-name">{{user.name}}</span>
                     </li>
                     {{/activeConversation}}
@@ -120,8 +119,8 @@
         </div>
         <!-- {{>message}} -->
         <div class="message">
-            <span class="msg-time">{{time}}</span>
-            <span class="msg-user-name" on-tap="openUserConversation:{{userName}}">{{userName}}:</span>
+            <span class="msg-time">{{showTime(sentAt)}}</span>
+            <span class="msg-user-name" on-tap="showUserConversation:{{userId}}">{{userName}}</span>
             <span class="msg-text">{{text}}</span>
         </div>
         <!-- {{/message}} -->

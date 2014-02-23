@@ -10,14 +10,51 @@
       },
       Conversation.prototype.defaults),
 
-      changeRoom: function (room, lastMessages, userNames) {
-        this.users = new ChatUsers();
-        this.users.initFromUserNames(userNames);
+      isCurrentRoom: function (roomName) {
+        var currentRoomName = 
+          this.get('room') != null ? this.get('room').get('name') : null;
 
+        return roomName == currentRoomName;
+      },
+
+      changeRoom: function (room, usersDTO, lastMessages) {
         this.set({
           room: room,
+          users: new ChatUsers(usersDTO),
           messages: new Messages(lastMessages)
         });
+      },
+
+      getUserById: function (userId) {
+        var users = this.get('users');
+
+        if(!users)
+          return;
+
+        return users.getUserById(userId);
+      },
+
+      addUser: function (userData) {
+        var users = this.get('users');
+
+        if(!users)
+          return;
+
+        return users.add(userData);
+      },
+
+      removeUser: function (userId) {
+        var users = this.get('users');
+
+        if(!users)
+          return;
+
+        var user = users.getUserById(userId);
+
+        if(!user)
+          return;
+
+        return users.remove(user);
       }
     });
 

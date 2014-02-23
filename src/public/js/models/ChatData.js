@@ -1,6 +1,6 @@
 ﻿define(
-  ['models/currentUser', 'models/chatUsers', 'models/rooms', 'models/roomConversation', 'models/userConversations'],
-  function (CurrentUser, ChatUsers, Rooms, RoomConversation, UserConversations) {
+  ['moment', 'models/currentUser', 'models/chatUsers', 'models/rooms', 'models/roomConversation', 'models/userConversations'],
+  function (moment, CurrentUser, ChatUsers, Rooms, RoomConversation, UserConversations) {
     'use strict';
 
     var chatData =  {
@@ -18,6 +18,10 @@
         }
 
         return ages;
+      },
+
+      showTime: function (date) {
+        return moment(date).format('HH:mm:ss');
       }
     };
 

@@ -1,5 +1,5 @@
 ﻿var config = {
-  maxTextMessages: 8,
+  maxTextMessages: 200,
   minValidAge: 8,
   maxValidAge: 108
 };

@@ -6,6 +6,7 @@
     var message = Backbone.Model.extend({
       defaults: {
         time: null,
+        userId: null,
         userName: null,
         text: null
       }
