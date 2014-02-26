@@ -45,8 +45,12 @@
 
     chatApp.on({
       login: function (event) {
-        if(event)
+        if(event) {
+          if(!loginForm.checkValidity())
+              return;
+
           event.original.preventDefault();
+        }
 
         chatData.currentUser.login(
           function (response) {

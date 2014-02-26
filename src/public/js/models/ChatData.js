@@ -10,16 +10,6 @@
       userConversations: new UserConversations(),
       selectedConversation: null,
 
-      getValidAges: function () {
-        var ages = [];
-
-        for (var i = config.minValidAge; i <= config.maxValidAge; i++) {
-          ages.push(i);
-        }
-
-        return ages;
-      },
-
       showTime: function (date) {
         return moment(date).format('HH:mm:ss');
       }

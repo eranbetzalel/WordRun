@@ -5,7 +5,6 @@
 
     var currentUser = BaseUser.extend({
       defaults: _.extend({
-          saveUserInfo: false,
           loggedIn: false
         },
         BaseUser.prototype.defaults),

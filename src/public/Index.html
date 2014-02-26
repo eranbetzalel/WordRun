@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="he" dir="rtl" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="he" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8" />
     <title>Word Run</title>
@@ -7,6 +7,8 @@
     <link type="text/css" rel="stylesheet" href="css/modal.css" />
     <link type="text/css" rel="stylesheet" href="css/tabs.css" />
     <link type="text/css" rel="stylesheet" href="css/index.css" />
+    <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.0.0/animate.min.css" />
+
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.9/require.min.js" data-main="js/init"></script>
 </head>
 <body>
@@ -15,49 +17,39 @@
     <script id="chatAppTemplate" type="text/html">
         <div class="modal-background pure-u">
             <div class="modal">
-                <form class="pure-form pure-form-aligned">
+                <form id="loginForm" class="pure-form pure-form-aligned">
                     <fieldset>
-                        <legend>פרטי משתמש</legend>
+                        <legend>User Information</legend>
                         <div class="pure-control-group">
-                            <label for="name">כינוי</label>
-                            <input id="name" type="text" placeholder="הכנס כינוי..." value="{{currentUser.name}}" />
+                            <label for="name">Name</label>
+                            <input id="name" type="text" value="{{currentUser.name}}" required pattern="[a-zA-Z0-9]+" />
                         </div>
 
                         <div class="pure-control-group">
-                            <label for="age">גיל</label>
-                            <select id="age" class="form-control" value='{{currentUser.age}}'>
-                                <option >-גיל-</option>
-                                {{#getValidAges()}}
-                                <option value="{{(.)}}">{{(.)}}</option>
-                                {{/getValidAges()}}
-                            </select>
+                            <label for="age">Age</label>
+                            <input id="age" type="number" value="{{currentUser.age}}" required min="8" max="108" />
                         </div>
 
                         <div class="pure-control-group">
-                            <label>מין</label>
+                            <label>Gender</label>
                             <label for="genderMale" class="pure-radio">
-                                <input id="genderMale" type="radio" name="{{currentUser.gender}}" value="male" />
-                                זכר
+                                <input id="genderMale" type="radio" name="{{currentUser.gender}}" value="male" required />
+                                Male
                             </label>
 
                             <label for="genderFemale" class="pure-radio">
-                                <input id="genderFemale" type="radio" name="{{currentUser.gender}}" value="female" />
-                                נקבה
+                                <input id="genderFemale" type="radio" name="{{currentUser.gender}}" value="female" required />
+                                Female
                             </label>
                         </div>
 
-                        <div class="pure-controls">
-                            <label for="saveUserInfo" class="pure-checkbox">
-                                <input id="saveUserInfo" type="checkbox" checked="{{currentUser.saveUserInfo}}" />שמור את פרטי המשתמש</label>
-
-                            <button id="submitLoginInfo" class="pure-button pure-button-primary" on-tap="login">היכנס לצ'אט</button>
-                        </div>
+                        <input type="submit" class="pure-input-1 pure-button pure-button-primary" value="Login" on-tap="login" />
                     </fieldset>
                 </form>
             </div>
         </div>
         <div id="users" class="pure-u-1-6 side-list">
-            <h4>משתמשים</h4>
+            <h4>Users</h4>
             <ul>
                 {{#roomConversation.users}}
                 <li on-tap="showUserConversation:{{id}}">{{name}}</li>
@@ -106,11 +98,11 @@
             </div>
             <form id="chatControls" class="pure-form">
                 <input class="pure-input-1-2" id="textToSend" type="text" on-enter="sendMessage" autocomplete="off" />
-                <button class="pure-button pure-button-primary" on-tap="sendMessage">שלח</button>
+                <button class="pure-button pure-button-primary" on-tap="sendMessage">Send</button>
             </form>
         </div>
         <div id="rooms" class="pure-u-1-6 side-list">
-            <h4>חדרים</h4>
+            <h4>Rooms</h4>
             <ul>
                 {{#rooms}}
                 <li on-tap="showRoomConversation:{{name}}">{{name}}</li>

@@ -4,8 +4,8 @@
  
 var userSchema = new Schema({
   name: { type: String, required: true, index: { unique: true, dropDups: true } },
-  age: { type: Number },
-  gender: { type: String },
+  age: { type: Number, required: true },
+  gender: { type: String, required: true },
   loggedInAt: { type: Date },
   loggedOutAt: { type: Date },
   room: { type: ObjectId, ref: 'Room' },

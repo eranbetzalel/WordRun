@@ -26,5 +26,40 @@
         overflow-y: auto;
         -moz-box-sizing: border-box;
         box-sizing: border-box;
-        text-align: right;
+        text-align: left;
+        width: 26em;
     }
+
+.modal .pure-form input[type=radio] {
+    margin: 0.6em 0;
+}
+
+.modal .pure-control-group label {
+    width: 5em;
+}
+
+.modal .pure-button-primary {
+    margin-top: 1em;
+}
+
+.modal .pure-form-aligned .pure-control-group .pure-radio {
+    width: auto;
+}
+
+.modal .pure-form input:valid:not([type=submit]) {
+    border-color: #080;
+    background: #e6ffe6 url(../img/valid.png) no-repeat 97% center;
+}
+
+.modal .pure-form input:focus:invalid:not([type=submit]) {
+    border-color: #800;
+    background: #ffe6e6 url(../img/invalid.png) no-repeat 97% center;
+}
+
+.modal .pure-control-group input#name {
+    width: 20em;
+}
+
+.modal .pure-control-group input#age {
+    width: 5em;
+}

@@ -47,6 +47,8 @@
     <Content Include="package.json" />
     <Compile Include="app.js" />
     <Content Include="public\css\tabs.css" />
+    <Content Include="public\img\invalid.png" />
+    <Content Include="public\img\valid.png" />
     <Content Include="public\Index.html" />
     <Content Include="public\favicon.ico" />
     <Content Include="public\css\index.css" />
@@ -61,6 +63,7 @@
   <ItemGroup>
     <Folder Include="models\" />
     <Folder Include="DTOs\" />
+    <Folder Include="public\img\" />
     <Folder Include="stores\" />
     <Folder Include="utils\" />
     <Folder Include="public" />
