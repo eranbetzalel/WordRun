@@ -11,7 +11,8 @@
     });
 
     var getUserById = function (userId) {
-      var promise =  new jQuery.Deferred();
+      //  TODO: replace with blue bird promise engine
+      var promise =  new $.Deferred();
 
       var user;
 
@@ -77,10 +78,6 @@
 
             //  Enter first room
             chatApp.fire('showRoomConversation', event, chatData.rooms.first().get('name'));
-
-            $('.modal').fadeOut(150, function () {
-              $('.modal-background').fadeOut(400);
-            });
           },
           handleError);
       },
@@ -175,12 +172,8 @@
       }
     });
 
-    if(chatData.currentUser.loggedIn) {
+    if(chatData.currentUser.get('loggedIn') === 'true')
       chatApp.fire('login');
-    }
-    else {
-      $('.modal-background').show();
-    }
 
     return chatApp;
   }

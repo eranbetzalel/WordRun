@@ -15,8 +15,9 @@
     <div id="chatApp" class="pure-g"></div>
 
     <script id="chatAppTemplate" type="text/html">
-        <div class="modal-background pure-u">
-            <div class="modal">
+        {{#currentUser.loggedIn === 'false' || currentUser.loggedIn === 'pending'}}
+        <div class="modal-background pure-u" outro='fade:fast'>
+            <div class="modal" intro='slide:slow' outro='slide:fast'>
                 <form id="loginForm" class="pure-form pure-form-aligned">
                     <fieldset>
                         <legend>User Information</legend>
@@ -43,11 +44,16 @@
                             </label>
                         </div>
 
-                        <input type="submit" class="pure-input-1 pure-button pure-button-primary" value="Login" on-tap="login" />
+                        <input 
+                            type="submit" 
+                            class="pure-input-1 pure-button pure-button-primary {{currentUser.loggedIn === 'pending' ? 'pure-button-disabled' : ''}}"
+                            value="Login" 
+                            on-tap="login" />
                     </fieldset>
                 </form>
             </div>
         </div>
+        {{/currentUser.loggedIn}}
         <div id="users" class="pure-u-1-6 side-list">
             <h4>Users</h4>
             <ul>

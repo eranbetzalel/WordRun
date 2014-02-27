@@ -5,7 +5,7 @@
 
     var currentUser = BaseUser.extend({
       defaults: _.extend({
-          loggedIn: false
+          loggedIn: null
         },
         BaseUser.prototype.defaults),
 
@@ -20,7 +20,7 @@
           async: false
         })
         .done(function (data) {
-          self.loggedIn = data.loggedIn;
+          self.set('loggedIn', data.loggedIn.toString());
 
           self._socket = io.connect('http://localhost:3000');
         });
@@ -30,7 +30,20 @@
         var self = this;
         var socket = this._socket;
 
-        var profileJSON = this.loggedIn ? null : this.toJSON();
+        var profileJSON;
+
+        switch(this.get('loggedIn')) {
+          case 'false':
+            profileJSON = this.toJSON();
+            this.set('loggedIn', 'pending');
+            break;
+          case 'true':
+            profileJSON = null;
+            break;
+          case 'pending':
+            failed('Already pending to log in.');
+            return;
+        }
 
         socket.emit(
           'login',
@@ -38,6 +51,8 @@
           function (response) {
             if (failed && response.error) {
               failed(response.error);
+
+              self.set('loggedIn', 'false');
 
               return;
             }
@@ -48,9 +63,10 @@
             socket.on('newRoomMessage', function (messageData) { self.trigger('newRoomMessage', messageData); })
             socket.on('joinedRoom', function (user) { self.trigger('joinedRoom', user); })
             socket.on('leftRoom', function (userId) { self.trigger('leftRoom', userId); })
-            
-            if(success)
-              success(response);
+
+            success(response);
+
+            self.set('loggedIn', 'true');
           }
         );
       },

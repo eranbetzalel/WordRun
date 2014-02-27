@@ -77,7 +77,18 @@ ChatController.prototype.onUserLogin = function (socket, loginUserData, response
   new Promise(function (resolve, reject) {
     if(!loginUserData && currentSession.userId) {
       //  Continue with current user ID
-      resolve(currentSession.userId);
+      self._userStore
+        .getUserById(currentSession.userId)
+        .then(function (user) {
+          if(!user) {
+            currentSession.destroy();
+
+            reject('Invalid user ID.');
+          }
+          else {
+            resolve(user.id);
+          }
+        }, reject);
     }
     else {
       //  Adds new user

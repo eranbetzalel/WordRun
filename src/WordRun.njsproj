@@ -25,6 +25,10 @@
     <Compile Include="models\room.js" />
     <Compile Include="models\user.js" />
     <Compile Include="public\js\lib\Ractive-Backbone.min.js" />
+    <Compile Include="public\js\lib\Ractive-events-keys.min.js" />
+    <Compile Include="public\js\lib\Ractive-events-tap.min.js" />
+    <Compile Include="public\js\lib\Ractive-transitions-fade.min.js" />
+    <Compile Include="public\js\lib\Ractive-transitions-slide.min.js" />
     <Compile Include="public\js\models\BaseUser.js" />
     <Compile Include="public\js\models\ChatData.js" />
     <Compile Include="public\js\models\ChatUser.js" />
@@ -53,7 +57,6 @@
     <Content Include="public\favicon.ico" />
     <Content Include="public\css\index.css" />
     <Content Include="public\css\modal.css" />
-    <Compile Include="public\js\stub.js" />
     <Compile Include="stats.js" />
     <Compile Include="config.js" />
     <Compile Include="public\js\app.js" />
