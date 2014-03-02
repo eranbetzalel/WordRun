@@ -4,6 +4,7 @@
 }
 
     .tabs ul {
+        height: 1.9em;
         list-style: none;
         width: 100%;
         display: inline-block;
@@ -21,32 +22,40 @@
             border-bottom: none;
             border-width: 1px;
             color: #999;
-            cursor: default;
+            cursor: pointer;
             height: 14px;
             margin-bottom: -1px;
-            margin-left: 5px;
+            margin-right: 5px;
             border-top-left-radius: 3px;
             border-top-right-radius: 3px;
-            float: right;
+            float: left;
+            height: 1.25em;
+            line-height: 1.4em;
         }
 
             .tabs ul li.selected-tab {
                 background: #fff;
-                color: #0088CC;
-                height: 15px;
                 border-bottom: 0;
+            }
+            
+            .tabs ul li.selected-tab i {
+                margin-left: 0.3em;
+                color: #BA0000;
+                cursor: pointer;
+            }
+
+            .tabs ul li.selected-tab .tab-name {
+                color: #0088CC;
             }
 
     .tabs .tab-content {
         margin: 0 auto;
-        background: #efefef;
-        background: #fff;
+        background-color: white;
         border: 1px solid #ddc;
-        border-top-style: none;
-        padding: 10px;
-        padding-bottom: 20px;
+        padding: 0.7em;
         display: none;
-        height: 250px;
+        height: 20em;
+        overflow-y: auto;
     }
 
     .tabs .selected-tab {

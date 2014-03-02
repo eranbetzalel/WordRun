@@ -1,6 +1,6 @@
 ﻿define(
-  ['Backbone', 'models/messages', 'models/conversation', 'models/ChatUsers', 'underscore'],
-  function (Backbone, Messages, Conversation, ChatUsers, _) {
+  ['Backbone', 'underscore', 'models/conversation'],
+  function (Backbone, _, Conversation) {
     'use strict';
 
     var roomConversation = Conversation.extend({
@@ -17,11 +17,11 @@
         return roomName == currentRoomName;
       },
 
-      changeRoom: function (room, usersDTO, lastMessages) {
+      changeRoom: function (room, chatUsers, lastMessages) {
         this.set({
           room: room,
-          users: new ChatUsers(usersDTO),
-          messages: new Messages(lastMessages)
+          users: chatUsers,
+          messages: lastMessages
         });
       },
 

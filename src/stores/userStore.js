@@ -7,10 +7,6 @@ exports = module.exports = UserStore;
 function UserStore() {
 }
 
-UserStore.prototype.getUserNames = function () {
-  return blueBirdUtil.mongoExec(User.find().select('name'));
-}
-
 UserStore.prototype.getUserById = function (userId) {
   return blueBirdUtil.mongoExec(User.findById(userId));
 }
@@ -19,8 +15,8 @@ UserStore.prototype.getUserByName = function (userName) {
   return blueBirdUtil.mongoExec(User.findOne({ name: userName }));
 }
 
-UserStore.prototype.getUsersByRoomId = function (roomId) { 
-  return blueBirdUtil.mongoExec(User.find({ room: new ObjectId(roomId) }));
+UserStore.prototype.getOnlineUsersByRoomId = function (roomId) { 
+  return blueBirdUtil.mongoExec(User.find({ room: new ObjectId(roomId), loggedOutAt: null }));
 }
 
 UserStore.prototype.getLoggedOutUsers = function () {

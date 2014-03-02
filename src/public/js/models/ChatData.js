@@ -10,8 +10,8 @@
       userConversations: new UserConversations(),
       selectedConversation: null,
 
-      showTime: function (date) {
-        return moment(date).format('HH:mm:ss');
+      showTime: function (date, format) {
+        return moment(date).format(format);
       }
     };
 

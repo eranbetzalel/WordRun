@@ -1,6 +1,6 @@
-﻿define(
-  ['config', 'jquery', 'html5shiv', 'Ractive', 'socket.io', 'Backbone', 'models/chatData', 'models/message'],
-  function (config, $, html5Shiv, Ractive, io, Backbone, chatData, Message) {
+define(
+  ['config', 'jquery', 'Ractive', 'socket.io', 'Backbone', 'models/chatData', 'models/rooms', 'models/room', 'models/ChatUsers', 'models/messages', 'models/message'],
+  function (config, $, Ractive, io, Backbone, chatData, Rooms, Room, ChatUsers, Messages, Message) {
     'use strict';
 
     var chatApp = new Ractive({
@@ -40,6 +40,30 @@
       return promise;
     };
 
+    var showRoomByName = function (roomName) {
+      var room = chatData.rooms.getRoomByName(roomName);
+
+      chatData.currentUser.changeRoom(
+        room,
+        function (response) {
+          chatData.roomConversation.changeRoom(
+            room,
+            new ChatUsers(response.users),
+            new Messages(response.lastMessages));
+
+          chatApp.set('selectedConversation', chatData.roomConversation);
+
+          scrollSelectedTab();
+        },
+        handleError);
+    };
+
+    var scrollSelectedTab = function () {
+      var selectedTab = $('.tab-content.selected-tab');
+
+      selectedTab.scrollTop(selectedTab.height())
+    };
+
     var handleError = function (error) {
       alert(error);
     };
@@ -55,16 +79,20 @@
 
         chatData.currentUser.login(
           function (response) {
-            chatData.rooms.initFromRooms(response.rooms);
+            chatApp.set('rooms', new Rooms(response.rooms));
 
             chatData.currentUser.on('newRoomMessage', function (messageData) { 
               chatData.roomConversation.addMessage(messageData);
+
+              scrollSelectedTab();
             });
 
             chatData.currentUser.on('newPrivateMessage', function (messageData) {
               getUserById(messageData.userId)
                 .then(function (user) {
                   chatData.userConversations.addMessage(user, messageData);
+
+                  scrollSelectedTab();
                 });
             });
 
@@ -77,7 +105,7 @@
             });
 
             //  Enter first room
-            chatApp.fire('showRoomConversation', event, chatData.rooms.first().get('name'));
+            showRoomByName(chatData.rooms.first().get('name'));
           },
           handleError);
       },
@@ -118,20 +146,7 @@
           return;
         }
 
-        var room = chatData.rooms.getRoomByName(roomName);
-        var self = this;
-
-        chatData.currentUser.changeRoom(
-          room,
-          function (response) {
-            chatData.roomConversation.changeRoom(
-              room,
-              response.users,
-              response.lastMessages);
-
-            self.set('selectedConversation', chatData.roomConversation);
-          },
-          handleError);
+        showRoomByName(roomName);
       },
 
       sendMessage: function (event) {
@@ -172,9 +187,27 @@
       }
     });
 
-    if(chatData.currentUser.get('loggedIn') === 'true')
+    //  Initialize chat application
+    if(chatData.currentUser.get('loggedIn') === 'true') {
       chatApp.fire('login');
+    }
+    else if(chatData.currentUser.get('loggedIn') === 'false') {
+      $.getJSON('/getChatSnapshot')
+        .done(function (snapshot) {
+          chatApp.set('rooms', new Rooms(snapshot.rooms));
 
+          chatData.roomConversation.changeRoom(
+            new Room(snapshot.rooms[0]),
+            new ChatUsers(snapshot.firstRoomUsers),
+            new Messages(snapshot.firstRoomLastMessages));
+
+          chatApp.set('selectedConversation', chatData.roomConversation);
+
+          scrollSelectedTab();
+        });
+    }
+
+    window.chatApp = chatApp;
     return chatApp;
   }
 );

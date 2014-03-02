@@ -1,4 +1,5 @@
 ﻿var mongoose = require('mongoose')
+  , Message = require('../DTOs/message.js')
   , Schema = mongoose.Schema
   , ObjectId = Schema.ObjectId;
  
@@ -21,6 +22,15 @@ roomSchema.methods.toDTO = function () {
     name : this.name,
     description : this.description
   };
+}
+
+roomSchema.methods.toDTOWithMessages = function () {
+  var dto = this.toDTO();
+
+  dto.lastMessages =
+    this.lastMessages.map(function (message) { return new Message(message); });
+
+  return dto;
 }
 
 module.exports = mongoose.model('Room', roomSchema);

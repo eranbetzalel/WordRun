@@ -1,9 +1,9 @@
 ﻿define(
-  ['Backbone', 'models/UserConversation'],
-  function (Backbone, UserConversation) {
+  ['Backbone', 'models/baseCollection', 'models/UserConversation'],
+  function (Backbone, BaseCollection, UserConversation) {
     'use strict';
 
-    var userConversations = Backbone.Collection.extend({
+    var userConversations = BaseCollection.extend({
       model: UserConversation,
 
       getConversationByUserId: function (userId) {

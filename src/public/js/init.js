@@ -26,7 +26,9 @@ requirejs.config({
     'Ractive-Events-Tap' : ['Ractive'],
     'Ractive-Transitions-Fade' : ['Ractive'],
     'Ractive-Transitions-Slide' : ['Ractive'],
-    'app' : ['Ractive-Backbone', 'Ractive-Events-Keys', 'Ractive-Events-Tap', 'Ractive-Transitions-Fade', 'Ractive-Transitions-Slide']
+    'app' : [
+      'Ractive-Backbone', 'Ractive-Events-Keys', 'Ractive-Events-Tap', 'Ractive-Transitions-Fade',
+      'Ractive-Transitions-Slide', 'html5shiv']
   }
 });
 

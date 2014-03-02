@@ -62,10 +62,22 @@ ChatController.prototype.onDisconnect = function (socket) {
   
   if(!currentUserId)
     return;
-  
-  this._userStore
-    .updateUser(currentUserId, { loggedOutAt: Date.now(), socketId: null })
-    .then(stats.logout);
+
+  var self = this;
+
+  this._userStore.getUserById(currentUserId)
+    .then(function (user) {
+      var userRoomId = user.room.toJSON()
+
+      socket.broadcast.to(userRoomId).emit('leftRoom', currentUserId);
+
+      return self._userStore.updateUser(
+        currentUserId, { loggedOutAt: Date.now(), socketId: null });
+    })
+    .then(stats.logout)
+    .catch(function (err) {
+      console.log(err.stack);
+    });
 }
 
 ChatController.prototype.onUserLogin = function (socket, loginUserData, responseCallback) {
@@ -161,7 +173,7 @@ ChatController.prototype.onUserChangeRoom = function (socket, roomId, responseCa
         self._userStore.userSwitchRoom(currentUserId, roomId),
         oldRoomId,
         self._roomStore.getRoomById(roomId),
-        self._userStore.getUsersByRoomId(roomId)]);
+        self._userStore.getOnlineUsersByRoomId(roomId)]);
     })
     .spread(function (user, oldRoomId, newRoom, newRoomUsers) {
       if(oldRoomId) {
@@ -271,6 +283,32 @@ ChatController.prototype.isUserLoggedIn = function (req, res) {
     .then(function (user) {
       res.json({
         loggedIn: user != null && user.loggedInAt != null
+      });
+    })
+    .catch(function (err) {
+      console.log(err.stack);
+    });
+}
+
+ChatController.prototype.getChatSnapshot = function (req, res) {
+  var self = this;
+
+  this._roomStore.getRooms()
+    .then(function(rooms) {
+      var firstRoom = rooms[0];
+
+      return Promise.all([
+        rooms,
+        firstRoom,
+        self._userStore.getOnlineUsersByRoomId(firstRoom.id)]);
+    })
+    .spread(function(rooms, firstRoom, firstRoomUsers) {
+      var firstRoomDTO = firstRoom.toDTOWithMessages();
+
+      res.json({
+        rooms: rooms.map(function (room) { return room.toDTO(); }),
+        firstRoomUsers: firstRoomUsers.map(function (user) { return user.toDTO(); }),
+        firstRoomLastMessages: firstRoom.toDTOWithMessages().lastMessages
       });
     })
     .catch(function (err) {

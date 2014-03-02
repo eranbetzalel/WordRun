@@ -26,6 +26,10 @@ app.get("/isLoggedIn",  function (req, res) {
   global.chatController.isUserLoggedIn(req, res)
 });
 
+app.get("/getChatSnapshot",  function (req, res) {
+  global.chatController.getChatSnapshot(req, res)
+});
+
 app.get("*", function (req, res) {
   res.sendfile("./public/index.html");
 });

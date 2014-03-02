@@ -29,6 +29,7 @@
     <Compile Include="public\js\lib\Ractive-events-tap.min.js" />
     <Compile Include="public\js\lib\Ractive-transitions-fade.min.js" />
     <Compile Include="public\js\lib\Ractive-transitions-slide.min.js" />
+    <Compile Include="public\js\models\BaseCollection.js" />
     <Compile Include="public\js\models\BaseUser.js" />
     <Compile Include="public\js\models\ChatData.js" />
     <Compile Include="public\js\models\ChatUser.js" />

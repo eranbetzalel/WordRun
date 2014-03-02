@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <title>Word Run</title>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css" />
+    <link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css" />
+    <link type="text/css" rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.0.0/animate.min.css" />
     <link type="text/css" rel="stylesheet" href="css/modal.css" />
     <link type="text/css" rel="stylesheet" href="css/tabs.css" />
     <link type="text/css" rel="stylesheet" href="css/index.css" />
-    <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.0.0/animate.min.css" />
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.9/require.min.js" data-main="js/init"></script>
 </head>
@@ -44,23 +45,25 @@
                             </label>
                         </div>
 
-                        <input 
-                            type="submit" 
+                        <input
+                            type="submit"
                             class="pure-input-1 pure-button pure-button-primary {{currentUser.loggedIn === 'pending' ? 'pure-button-disabled' : ''}}"
-                            value="Login" 
+                            value="Login"
                             on-tap="login" />
                     </fieldset>
                 </form>
             </div>
         </div>
         {{/currentUser.loggedIn}}
-        <div id="users" class="pure-u-1-6 side-list">
-            <h4>Users</h4>
-            <ul>
-                {{#roomConversation.users}}
-                <li on-tap="showUserConversation:{{id}}">{{name}}</li>
-                {{/roomConversation.users}}
-            </ul>
+        <div id="users" class="pure-u-1-6">
+            <div class="side-list">
+                <h4>Users</h4>
+                <ul>
+                    {{#roomConversation.users}}
+                    <li class="list-row" on-tap="showUserConversation:{{id}}">{{name}}</li>
+                    {{/roomConversation.users}}
+                </ul>
+            </div>
         </div>
         <div class="pure-u-2-3">
             <div class="tabs">
@@ -76,8 +79,8 @@
                     {{#activeConversation}}
                     <li class="tab-title {{ selectedConversation === (.) ? 'selected-tab' : '' }}"
                         on-tap="showUserConversation:{{user.id}}">
-                        <span on-tap="closeUserConversation:{{user.id}}">X</span>
                         <span class="tab-name">{{user.name}}</span>
+                        <i class="fa fa-times" on-tap="closeUserConversation:{{user.id}}"></i>
                     </li>
                     {{/activeConversation}}
                     {{/userConversations}}
@@ -103,22 +106,23 @@
                 </div>
             </div>
             <form id="chatControls" class="pure-form">
-                <input class="pure-input-1-2" id="textToSend" type="text" on-enter="sendMessage" autocomplete="off" />
-                <button class="pure-button pure-button-primary" on-tap="sendMessage">Send</button>
+                <input class="pure-input-1" id="textToSend" type="text" on-enter="sendMessage" placeholder="Write here, then hit Enter to send..." autocomplete="off" />
             </form>
         </div>
-        <div id="rooms" class="pure-u-1-6 side-list">
-            <h4>Rooms</h4>
-            <ul>
-                {{#rooms}}
-                <li on-tap="showRoomConversation:{{name}}">{{name}}</li>
-                {{/rooms}}
-            </ul>
+        <div id="rooms" class="pure-u-1-6">
+            <div class="side-list">
+                <h4>Rooms</h4>
+                <ul>
+                    {{#rooms}}
+                    <li on-tap="showRoomConversation:{{name}}">{{name}}</li>
+                    {{/rooms}}
+                </ul>
+            </div>
         </div>
         <!-- {{>message}} -->
-        <div class="message">
-            <span class="msg-time">{{showTime(sentAt)}}</span>
-            <span class="msg-user-name" on-tap="showUserConversation:{{userId}}">{{userName}}</span>
+        <div class="message list-row">
+            <span class="msg-time" title="{{showTime(sentAt, 'HH:mm:ss')}}">{{showTime(sentAt, 'HH:mm')}}</span>
+            <span class="msg-user-name" on-tap="showUserConversation:{{userId}}">{{userName}}:</span>
             <span class="msg-text">{{text}}</span>
         </div>
         <!-- {{/message}} -->

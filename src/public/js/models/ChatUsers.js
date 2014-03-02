@@ -1,9 +1,9 @@
 ﻿define(
-  ['Backbone', 'models/chatUser', 'underscore'],
-  function (Backbone, ChatUser, _) {
+  ['Backbone', 'models/baseCollection', 'models/chatUser', 'underscore'],
+  function (Backbone, BaseCollection, ChatUser, _) {
     'use strict';
 
-    var chatUsers = Backbone.Collection.extend({
+    var chatUsers = BaseCollection.extend({
       model: ChatUser,
       
       getUserById: function (userId) {

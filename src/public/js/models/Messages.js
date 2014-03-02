@@ -1,9 +1,9 @@
 ﻿define(
-  ['Backbone', 'models/message', 'config'],
-  function (Backbone, Message, config) {
+  ['Backbone', 'models/baseCollection', 'models/message', 'config'],
+  function (Backbone, BaseCollection, Message, config) {
     'use strict';
 
-    var messages = Backbone.Collection.extend({
+    var messages = BaseCollection.extend({
       model: Message,
 
       addMessage: function (message) {
