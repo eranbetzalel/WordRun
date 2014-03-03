@@ -1,3 +1,4 @@
+//  TODO: Add logging utility
 var http = require('http')
   , express = require('express')
   , RedisStore = require('connect-redis')(express)
