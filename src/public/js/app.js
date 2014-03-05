@@ -207,7 +207,6 @@ define(
         });
     }
 
-    window.chatApp = chatApp;
     return chatApp;
   }
 );
