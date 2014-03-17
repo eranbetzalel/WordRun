@@ -27,3 +27,7 @@ Future tasks:
  * Save chat content.
  * Image sharing.
  * File sharing.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/eranbetzalel/wordrun/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
